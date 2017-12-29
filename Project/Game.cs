@@ -14,13 +14,30 @@ namespace CastleGrimtol.Project
             Console.WriteLine("Reset everything?");
             Console.ReadLine();
         }
+
+        internal void GetRoomItems(Room currentRoom)
+        {
+            if(currentRoom.Items.Count != 0)
+            {
+                Console.WriteLine("These items are in the room...");
+            for(int i = 0; i< currentRoom.Items.Count; i++)
+            {
+                string item = currentRoom.Items[i].Name;
+                Console.WriteLine(item);
+            }
+            }
+        }
+
         public string GetUserInput()
         {
-            Console.Write("what would you like to do?: ");
+            Console.Write($"What would you like to do {CurrentPlayer.Name}?: ");
             return Console.ReadLine();
 
         }
-
+        public void SetCurrentPlayer(string player)
+        {
+            CurrentPlayer = new Player(player);
+        }
         internal void HandleUserInput(string userInput)
         {
 
@@ -112,9 +129,26 @@ namespace CastleGrimtol.Project
                 //what if locked
             }
         }
-        public void TakeItem(string userInput)
+        public void TakeItem(string option)
         {
-
+            for(int i = 0; i<CurrentRoom.Items.Count; i++)
+            {
+                Item item = CurrentRoom.Items[i];
+                if(item.Name.ToLower() == option){
+                    CurrentPlayer.Inventory.Add(item);
+                    Console.WriteLine($"{item.Name} has been added to your inventory");
+                    CurrentRoom.Items.Remove(item);
+                }
+                else
+                {
+                    Console.WriteLine($"{option} does not exist in this room.");
+                }
+            }
+             for(int j = 0; j<CurrentPlayer.Inventory.Count; j++)
+                {
+                    Item playerItem = CurrentPlayer.Inventory[j];
+                    Console.WriteLine(playerItem.Name);
+                }
         }
         public void DropItem(string userInput)
         {
@@ -129,25 +163,26 @@ namespace CastleGrimtol.Project
         {
             Console.WriteLine("Halt traveler. Identify yourself.");
             Console.Write("I go by: ");
-            String Player = Console.ReadLine();
+            String player = Console.ReadLine();
+            SetCurrentPlayer(player);
 
-            Player CurrentPlayer = new Player(Player);
 
-            Item rustyDagger = new Item("RustyDagger", "Battle Worn Dagger that has been rusted and dulled");
-            Item rustyKnife = new Item("RustyKnife", "Small Single Edged Knife that has been rusted and dulled");
-            Item woodenShield = new Item("WoodenShield", "Battle Worn Wooded Shield that has been splintered and cracked");
-            Item greatSword = new Item("GreatSword", "Two Handed Steel Sword, with gold and silver details along the handle. Provides heavy damage, but slower to attack with.");
-            Item battleAxe = new Item("BattleAxe", "Double sided axe. heavy damage, sligthly slower attack than traditional light axe.");
-            Item heavyArmor = new Item("HeavyArmor", "Heavy duty steel armor, reduces health loss from during attacks.");
+            Item rustyDagger = new Item("rustyDagger", "Battle Worn Dagger that has been rusted and dulled");
+            Item rustyKnife = new Item("rustyKnife", "Small Single Edged Knife that has been rusted and dulled");
+            Item woodenShield = new Item("woodenShield", "Battle Worn Wooded Shield that has been splintered and cracked");
+            Item greatSword = new Item("greatSword", "Two Handed Steel Sword, with gold and silver details along the handle. Provides heavy damage, but slower to attack with.");
+            Item battleAxe = new Item("battleAxe", "Double sided axe. heavy damage, sligthly slower attack than traditional light axe.");
+            Item heavyArmor = new Item("heavyArmor", "Heavy duty steel armor, reduces health loss from during attacks.");
             Item lightArmor = new Item("ligthArmor", "Light armor, designed for stealth and speed, reduces damage from incoming attacks");
-            Item healthPoultice = new Item("HealthPoultice", "Health potion that recovers health that has been lost during battle");
-            Item brassKey = new Item("BrassKey", "Used for unlocking a single brass lock");
-            Item decorativeKey = new Item("DecorativeKey", "This key is absolutely useless.");
-            Item silverKey = new Item("SilverKey", "unlocks many of the cells in the dungeon.");
-            Item goldKey = new Item("GoldKey", "Unlocks the final room");
-            Item book = new Item("Book", "Used to unlock the secret room behind the book case in room 4");
-            Item wine = new Item("Wine", "Disorients player, making player go in a random direction for 3 moves");
-            Item food = new Item("Food", "Food can be used to distract animals, as well as provide small health regeneration");
+            Item healthPoultice = new Item("healthPoultice", "Health potion that recovers health that has been lost during battle");
+            Item brassKey = new Item("brassKey", "Used for unlocking a single brass lock");
+            Item decorativeKey = new Item("decorativeKey", "This key is absolutely useless.");
+            Item silverKey = new Item("silverKey", "unlocks many of the cells in the dungeon.");
+            Item goldKey = new Item("goldKey", "Unlocks the final room");
+            Item book = new Item("book", "Used to unlock the secret room behind the book case in room 4");
+            Item wine = new Item("wine", "Disorients player, making player go in a random direction for 3 moves");
+            Item food = new Item("food", "Food can be used to distract animals, as well as provide small health regeneration");
+            Item rock = new Item("rock", "Large rock can be used in place of other objects that control pressure plates");
             Item crownOfFire = new Item("Crown of Fire", "Once the player equips this, the game is over.");
             List<Item> GameItems = new List<Item>();
 
@@ -170,7 +205,7 @@ namespace CastleGrimtol.Project
 
             Room Room0 = new Room("Room 0", "First floor Main Hallway");
             Room Room0N = new Room("Room 0 N", "The North side of the main hallway");
-            Room Room1 = new Room("Room 1", "You hear the floor creek as you cross the threshold into this room.. SLAM!!! Click!!! You Look behind you and see that the door has shut and locked behind you. You try to open it with no luck. Lying on the floor in front of you is a small Brass Key. There is no keyhole on the door However. A large Painting appears on the wall to the east.");
+            Room Room1 = new Room("Room 1", "You hear the floor creek as you cross the threshold into this room.. SLAM!!! Click!!! You Look behind you and see that the door has shut and locked behind you. You try to open it with no luck.There is no keyhole on the door However. A large Painting appears on the wall to the east.");
             Room Painting = new Room("Painting", "The Painting grows larger as you move toward it. You see some writing, it appears to be a riddle. \" To Exit you Must Solve this Riddle...\"");
             Room Room2 = new Room("Room 2", "First floor, Large table with food and drink to the North, staircase leading to second Floor to the West");
             Room Room2N = new Room("Room 2 North", "First floor, Large table with food and drink. There is Also a large heavy rock lying on the ground.");
@@ -220,6 +255,9 @@ namespace CastleGrimtol.Project
             Room1.Exits.Add("s", Room1);
             Room1.Exits.Add("n", Room1);
 
+            Room1.Items.Add(brassKey);
+            
+
             Painting.Exits.Add("w", Room1);
             Painting.Exits.Add("e", Painting);
             Painting.Exits.Add("s", Painting);
@@ -234,6 +272,10 @@ namespace CastleGrimtol.Project
             Room2N.Exits.Add("e", Room2N);
             Room2N.Exits.Add("s", Room2);
             Room2N.Exits.Add("n", Room2N);
+
+            Room2N.Items.Add(wine);
+            Room2N.Items.Add(food);
+            Room2N.Items.Add(rock);
 
             Room3.Exits.Add("w", Room3);
             Room3.Exits.Add("e", Room0);
