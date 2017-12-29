@@ -11,7 +11,8 @@ namespace CastleGrimtol.Project
 
         public void Reset()
         {
-
+            Console.WriteLine("Reset everything?");
+            Console.ReadLine();
         }
         public string GetUserInput()
         {
@@ -78,21 +79,26 @@ namespace CastleGrimtol.Project
             if (CurrentRoom.Exits.ContainsKey(direction))
             {
                 if (!CurrentRoom.Exits[direction].IsLocked)
-                {   
+                {
                     CurrentRoom = CurrentRoom.Exits[direction];
-                    if(CurrentRoom == GameRooms[3])
+                    if (CurrentRoom.Name == "Painting")
                     {
-                        PaintingRiddle();
+                        if (!CurrentRoom.Visited)
+                        {
+                            PaintingRiddle();
+                        }
+                       
                     }
-                    else if(CurrentRoom == GameRooms[7])
+                    else if (CurrentRoom.Name == "Room 3S")
                     {
                         RemoveBook();
                     }
-                    else if(CurrentRoom == GameRooms[11])
+                    else if (CurrentRoom.Name == "Room 5E")
                     {
                         TrapDoor();
                     }
-                    else if(CurrentRoom == GameRooms[14]){
+                    else if (CurrentRoom.Name == "Room 4E")
+                    {
                         SecretRoom();
                     }
 
@@ -165,7 +171,7 @@ namespace CastleGrimtol.Project
             Room Room0 = new Room("Room 0", "First floor Main Hallway");
             Room Room0N = new Room("Room 0 N", "The North side of the main hallway");
             Room Room1 = new Room("Room 1", "You hear the floor creek as you cross the threshold into this room.. SLAM!!! Click!!! You Look behind you and see that the door has shut and locked behind you. You try to open it with no luck. Lying on the floor in front of you is a small Brass Key. There is no keyhole on the door However. A large Painting appears on the wall to the east.");
-            Room Painting = new Room("Painting", "The Painting grows larger as you move toward it. You see some writing, it appears to be a riddle. \" To Exit you Must Solve this Riddle...What has roots as nobody sees, Is taller than trees, Up, up it goes, And yet never grows? What am I?\"");
+            Room Painting = new Room("Painting", "The Painting grows larger as you move toward it. You see some writing, it appears to be a riddle. \" To Exit you Must Solve this Riddle...\"");
             Room Room2 = new Room("Room 2", "First floor, Large table with food and drink to the North, staircase leading to second Floor to the West");
             Room Room2N = new Room("Room 2 North", "First floor, Large table with food and drink. There is Also a large heavy rock lying on the ground.");
             Room Room3 = new Room("Room 3", "First Floor, Room has large desk with a book sitting on it to the South");
@@ -222,7 +228,7 @@ namespace CastleGrimtol.Project
             Room2.Exits.Add("w", StairCase);
             Room2.Exits.Add("e", Room0);
             Room2.Exits.Add("s", Room2);
-            Room2.Exits.Add("n", Room2);
+            Room2.Exits.Add("n", Room2N);
 
             Room2N.Exits.Add("w", Room2N);
             Room2N.Exits.Add("e", Room2N);
@@ -325,7 +331,51 @@ namespace CastleGrimtol.Project
         }
         public void PaintingRiddle()
         {
-            Console.WriteLine("i got to the painting room");
+            int guess = 0;
+            bool inRiddle = true;
+            string answer = "time";
+            Console.Clear();
+            Console.WriteLine(CurrentRoom.Description);
+            while (inRiddle)
+            {
+                if (guess < 3)
+                {
+                    Console.WriteLine("Mountains will crumble and temples will fall, and no man can survive its endless call. What is it?");
+                    Console.WriteLine($"You have {3 - guess} guesses remaining.");
+                    string response = Console.ReadLine().ToLower();
+                    if (response == answer)
+                    {
+                        Console.WriteLine("You have proven your wisdom. You may continue on your quest.");
+                        inRiddle = false;
+                        CurrentRoom.Exits["w"].IsLocked = false;
+                        CurrentRoom.Exits["w"].Description = "You are in a large room. To the East is an empty picture frame, to the West is the main hallway.";
+                        CurrentRoom.Visited = true;
+                        Console.WriteLine("The door to your west has unlocked and swung back open.");
+                        CurrentRoom.Description = "On the wall there is now an empty picture frame. To the West is a door leading to the main hallway.";
+                        continue;
+                    }
+                    else
+                    {
+                        guess++;
+                        Console.Clear();
+                        Console.WriteLine("Your answer was incorrect.");
+                        if(guess == 3)
+                        {
+                        continue;
+                        }
+                        else
+                        {
+                        Console.WriteLine("The walls start to slowly collapse around you. You begin to feel trapped. You fear that you will not get out of this.");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("You have used up all of your guesses. The walls continue to collapse on you. You can no longer move. You figure out the answer to the riddle, but it is too late. You have died.");
+                    GameOver();
+                    inRiddle = false;
+                }
+            }
         }
         public void TrapDoor()
         {
@@ -335,6 +385,11 @@ namespace CastleGrimtol.Project
         public void PitFall()
         {
 
+        }
+        public void GameOver()
+        {
+            Console.WriteLine("GAME OVER");
+            Reset();
         }
         public void UseItem(string itemName)
         {

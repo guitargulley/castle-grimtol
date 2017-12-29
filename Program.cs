@@ -16,7 +16,7 @@ namespace CastleGrimtol
             while (playing)
             {
                 Console.WriteLine(game.CurrentRoom.Description);
-                Console.WriteLine("This is the room at: " ,game.GameRooms[1].Name);
+                // Console.WriteLine("This is the room at: " ,game.GameRooms[1].Name);
                 var userInput = game.GetUserInput().ToLower();
                 
                 game.HandleUserInput(userInput);
