@@ -8,6 +8,7 @@ namespace CastleGrimtol.Project
         public Room CurrentRoom { get; set; }
         public Player CurrentPlayer { get; set; }
         public List<Room> GameRooms { get; set; }
+        public List<Enemy> Enemies { get; set; }
         public Enemy CurrentEnemy { get; set; }
         public List<Item> GameItems { get; set; }
 
@@ -41,7 +42,15 @@ namespace CastleGrimtol.Project
             CurrentPlayer = new Player(player);
         }
 
-
+        public void CheckInventory()
+        {
+            Console.Clear();
+            for (int i = 0; i < CurrentPlayer.Inventory.Count; i++)
+            {
+                Item item = CurrentPlayer.Inventory[i];
+                Console.WriteLine(item.Name);
+            }
+        }
         public void Look()
         {
 
@@ -58,8 +67,18 @@ namespace CastleGrimtol.Project
             {
                 if (!CurrentRoom.Exits[direction].IsLocked)
                 {
+                    var PrevRoom = CurrentRoom;
                     CurrentRoom = CurrentRoom.Exits[direction];
-                    if (CurrentRoom.Name == "Painting")
+                    if (CurrentRoom.Name == "Room 1")
+                    {
+                        if (!CurrentRoom.Visited)
+                        {
+                            CurrentRoom.Exits["w"].IsLocked = true;
+                            CurrentRoom.Visited = true;
+                        }
+
+                    }
+                    else if (CurrentRoom.Name == "Painting")
                     {
                         if (!CurrentRoom.Visited)
                         {
@@ -71,6 +90,16 @@ namespace CastleGrimtol.Project
                     {
                         RemoveBook();
                     }
+                    else if (CurrentRoom.Name == "Dungeon Cell" && !CurrentRoom.Visited)
+                    {
+                        SkeletonFight();
+                        CurrentRoom.Description = "The bars that surround this cell fell cold, they are as black as coal. An exit is to your East";
+                    }
+                    else if (CurrentRoom.Name == "Upstairs Reading Room" && !CurrentRoom.Visited)
+                    {
+                        SkeletonFight();
+                        CurrentRoom.Description = "The room smells of leather and mohagany. You look closely at the room and find many bookshelves of historic first edition books. There is an exit to your east.";
+                    }
                     else if (CurrentRoom.Name == "Room 5E")
                     {
                         TrapDoor();
@@ -79,6 +108,12 @@ namespace CastleGrimtol.Project
                     {
                         SecretRoom();
                     }
+                    else if (CurrentRoom.Name == "Room9")
+                    {
+                        CurrentEnemy = Enemies[3];
+                        BossFight();
+                    }
+
 
 
                 }
@@ -126,7 +161,7 @@ namespace CastleGrimtol.Project
             String player = Console.ReadLine();
             SetCurrentPlayer(player);
 
-            
+
 
             Item rustyDagger = new Item("rustyDagger", "Battle Worn Dagger that has been rusted and dulled");
             Item rustyKnife = new Item("rustyKnife", "Small Single Edged Knife that has been rusted and dulled");
@@ -135,13 +170,14 @@ namespace CastleGrimtol.Project
             Item healthPotion = new Item("healthPotion", "Health potion that recovers health that has been lost during battle");
             Item brassKey = new Item("brassKey", "Used for unlocking a single brass lock");
             Item decorativeKey = new Item("decorativeKey", "This key is absolutely useless.");
+            Item steelKey = new Item("steelKey", "unlocks room 17");
             Item silverKey = new Item("silverKey", "unlocks many of the cells in the dungeon.");
             Item goldKey = new Item("goldKey", "Unlocks the final room");
             Item book = new Item("book", "Used to unlock the secret room behind the book case in room 4");
             Item wine = new Item("wine", "Disorients player, making player go in a random direction for 3 moves");
             Item food = new Item("food", "Food can be used to distract animals, as well as provide small health regeneration");
             Item rock = new Item("rock", "Large rock can be used in place of other objects that control pressure plates");
-            Item crownOfFire = new Item("Crown of Fire", "Once the player equips this, the game is over.");
+            Item crown = new Item("crownOfFire", "Once the player equips this, the game is over.");
             List<Item> GameItems = new List<Item>();
 
             GameItems.Add(rustyDagger);
@@ -156,7 +192,7 @@ namespace CastleGrimtol.Project
             GameItems.Add(book);
             GameItems.Add(wine);
             GameItems.Add(food);
-            GameItems.Add(crownOfFire);
+            GameItems.Add(crown);
 
 
 
@@ -173,6 +209,7 @@ namespace CastleGrimtol.Project
             Room Room5 = new Room("Room 5", "First Floor, room has a large luxurious rug on the ground spanning the width of the room. to the East is a large desk, you can see a large stack of gold coins sitting on it.");
             Room Room5E = new Room("Room 5E", "TRAP DOOR!");
             Room StairCase = new Room("Stairs", "Stairs from first floor to second floor");
+            Room StairCase2 = new Room("Stairs", "Stairs from Fisrt Floor to Dungeon");
             Room Room6 = new Room("Upstairs Hallway", "You reached the second floor, you are in a long narrow hallway. There is no source of light. You stumble through this hallway until you can see light. The hallway continues to your North");
             Room Room7 = new Room("Upstairs Hallway South", "There are hundreds of lit candles covering the walls of this hallway. there is a room to the West. The hallway continues to the North and South");
             Room Room7N = new Room("Upstairs Hallway North", "There are hundreds of lit candles covering the walls of this hallway. there is a Locked room to the West. The hallway continues to the South");
@@ -197,9 +234,15 @@ namespace CastleGrimtol.Project
             Room4s.IsLocked = true;
             Room5.IsLocked = true;
             Room10.IsLocked = true;
+            Room11.IsLocked = true;
+
+            Room9.IsLocked = true;
+            Room17.IsLocked = true;
+
 
             GameRooms.Add(Painting);
             GameRooms.Add(StairCase);
+            GameRooms.Add(StairCase2);
             GameRooms.Add(Ladder);
             GameRooms.Add(Balcony);
             GameRooms.Add(Room0);
@@ -228,18 +271,47 @@ namespace CastleGrimtol.Project
             GameRooms.Add(Room17);
             GameRooms.Add(Room18);
 
-            brassKey.Rooms.Add(Room4);
-            silverKey.Rooms.Add(Room11);
-            book.Rooms.Add(Room4);
-            rock.Rooms.Add(Room3S);
-            addRooms(wine);
-            addRooms(food);
-            addRooms(rustyDagger);
-            addRooms(rustyKnife);
-            addRooms(healthPotion);
-            addRooms(greatSword);
-            addRooms(battleAxe);
-           
+
+            Room15.UsableItems.Add(rustyDagger);
+            Room15.UsableItems.Add(rustyKnife);
+            Room15.UsableItems.Add(battleAxe);
+            Room15.UsableItems.Add(greatSword);
+
+            Room14.UsableItems.Add(rustyDagger);
+            Room14.UsableItems.Add(rustyKnife);
+            Room14.UsableItems.Add(battleAxe);
+            Room14.UsableItems.Add(greatSword);
+
+            Room8.UsableItems.Add(rustyDagger);
+            Room8.UsableItems.Add(rustyKnife);
+            Room8.UsableItems.Add(battleAxe);
+            Room8.UsableItems.Add(greatSword);
+
+            Room9.UsableItems.Add(rustyDagger);
+            Room9.UsableItems.Add(rustyKnife);
+            Room9.UsableItems.Add(battleAxe);
+            Room9.UsableItems.Add(greatSword);
+            Room9.UsableItems.Add(healthPotion);
+
+            foreach (Room room in GameRooms)
+            {
+                room.UsableItems.Add(healthPotion);
+                room.UsableItems.Add(food);
+                room.UsableItems.Add(wine);
+                room.UsableItems.Add(crown);
+            }
+
+            Room4.UsableItems.Add(brassKey);
+            Room11.UsableItems.Add(silverKey);
+            Room4.UsableItems.Add(book);
+            Room3S.UsableItems.Add(rock);
+            Room7N.UsableItems.Add(goldKey);
+
+
+
+
+
+
 
 
 
@@ -264,15 +336,21 @@ namespace CastleGrimtol.Project
             Room2.Exits.Add("n", Room2N);
 
             Room2N.Exits.Add("s", Room2);
+            Room2N.Exits.Add("w", StairCase2);
 
             Room2N.Items.Add(wine);
             Room2N.Items.Add(food);
             Room2N.Items.Add(rock);
 
             StairCase.Exits.Add("up", Room6);
-            StairCase.Exits.Add("down", Room17);
+            StairCase.Exits.Add("down", Room2);
+
+            StairCase2.Exits.Add("up", Room2N);
+            StairCase2.Exits.Add("down", Room17);
 
             Room3.Exits.Add("e", Room0);
+            Room3.Exits.Add("s", Room3S);
+
             Room3S.Exits.Add("n", Room3);
 
             Room4.Exits.Add("w", Room0N);
@@ -291,6 +369,7 @@ namespace CastleGrimtol.Project
             Room5E.Exits.Add("w", Room5);
 
             Room6.Exits.Add("n", Room7);
+            Room6.Exits.Add("w", StairCase);
 
             Room7.Exits.Add("w", Room8);
             Room7.Exits.Add("n", Room7N);
@@ -305,6 +384,8 @@ namespace CastleGrimtol.Project
             Room9.Exits.Add("e", Room7N);
 
             Room10.Exits.Add("w", Room10W);
+
+            Room10.Items.Add(silverKey);
 
             Room10W.Exits.Add("e", Room10);
             Room10W.Exits.Add("w", Room11);
@@ -326,19 +407,40 @@ namespace CastleGrimtol.Project
 
             Room15.Exits.Add("e", Room12);
 
+            Room15.Items.Add(steelKey);
+
             Room16.Exits.Add("w", Room13);
 
-            Room17.Exits.Add("w", StairCase);
+            Room17.Exits.Add("w", StairCase2);
             Room17.Exits.Add("e", Room13);
 
             Room18.Exits.Add("e", Room11);
 
-            Enemy warrior = new Enemy("Skeleton Warrior",Room15);
+            Room18.Items.Add(decorativeKey);
+
+            Balcony.Exits.Add("e", Room9);
+
+            Balcony.Items.Add(crown);
+
+
+
+            Enemy warrior = new Enemy("Skeleton Warrior", Room15);
             Enemy ranger = new Enemy("Skeleton Ranger", Room8);
             Enemy troll = new Enemy("Troll", Room14);
             Enemy king = new Enemy("Undead King", Room9);
 
-            Enemy CurrentEnemy = null;
+            List<Enemy> Enemies = new List<Enemy>();
+
+            // Enemies.Add(warrior);
+            Room15.Enemy = warrior;
+            // Enemies.Add(ranger);
+            Room8.Enemy = ranger;
+            // Enemies.Add(troll);
+            Room14.Enemy = troll;
+            // Enemies.Add(king);
+            Room9.Enemy = king;
+
+            // Enemy CurrentEnemy = null;
 
             bool noInventory = true;
             while (noInventory)
@@ -395,6 +497,10 @@ namespace CastleGrimtol.Project
             {
                 Help();
             }
+            else if (userInput == "inventory")
+            {
+                CheckInventory();
+            }
             //figure out what to do with input
             // LOOK, GO, USE, HELP, ETC..
             else if (userInput.Contains(" "))
@@ -416,14 +522,18 @@ namespace CastleGrimtol.Project
                 }
                 else if (command == "use" && option != null)
                 {
-                    for (int i = 0; i < GameItems.Count; i++)
+
+                    Item item = null;
+                    for (int i = 0; i < CurrentPlayer.Inventory.Count; i++)
                     {
-                        Item gItem = GameItems[i];
-                        if (option == gItem.Name)
+                        Item gItem = CurrentPlayer.Inventory[i];
+                        if (option == gItem.Name.ToLower())
                         {
-                            UseItem(gItem);
+                            item = gItem;
+                            UseItem(item);
                         }
                     }
+
 
                 }
                 else
@@ -434,14 +544,7 @@ namespace CastleGrimtol.Project
 
         }
 
-        public void addRooms(Item item)
-        {
-            for (int i = 0; i < GameRooms.Count; i++)
-            {
-                Room room = GameRooms[i];
-                item.Rooms.Add(room);
-            }
-        }
+
 
         public void SecretRoom()
         {
@@ -453,11 +556,56 @@ namespace CastleGrimtol.Project
         }
         public void SkeletonFight()
         {
+            Console.WriteLine($"The {CurrentRoom.Enemy.Name} takes a swing at you but misses!");
+            CurrentEnemy = CurrentRoom.Enemy;
+            bool inBattle = true;
+            CurrentRoom.Visited = true;
+            while (inBattle)
+            {
+                Console.WriteLine(CurrentRoom.Enemy.Name + "-" + CurrentRoom.Enemy.Health);
+                Console.WriteLine(CurrentPlayer.Name + "-" + CurrentPlayer.Health);
+                if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health > 0)
+                {
+                    Console.WriteLine("What would you like to do?");
+                    string fight = Console.ReadLine();
+                    HandleUserInput(fight);
+                    if (CurrentRoom.Enemy.Health > 0)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took a substantial amount of damage!");
+                        CurrentPlayer.Health -= 8;
+                        
+                    }
+                }
+                else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"With the final blow you have defeated the {CurrentRoom.Enemy.Name}");
+                    inBattle = false;
+                    CurrentRoom.Enemy = null;
+                    
+                    continue;
+                }
+                else if (CurrentPlayer.Health <= 0 && CurrentRoom.Enemy.Health > 0)
+                {
+                    Console.Clear();
+                    inBattle = false;
+                    GameOver();
+                }
 
+
+            }
         }
         public void BossFight()
         {
-
+            for (int i = 0; i < Enemies.Count; i++)
+            {
+                Enemy enemy = Enemies[i];
+                if (enemy.Name == "Undead King")
+                {
+                    CurrentEnemy = enemy;
+                }
+            }
         }
         public void Intoxicated()
         {
@@ -485,7 +633,10 @@ namespace CastleGrimtol.Project
                     {
                         Console.WriteLine("You have proven your wisdom. You may continue on your quest.");
                         inRiddle = false;
+                        CurrentRoom.Exits["w"].Visited = true;
+                        Room nextRoom = CurrentRoom.Exits["w"];
                         CurrentRoom.Exits["w"].IsLocked = false;
+                        nextRoom.Exits["w"].IsLocked = false;
                         CurrentRoom.Exits["w"].Description = "You are in a large room. To the East is an empty picture frame, to the West is the main hallway.";
                         CurrentRoom.Visited = true;
                         Console.WriteLine("The door to your west has unlocked and swung back open.");
@@ -522,7 +673,14 @@ namespace CastleGrimtol.Project
         }
         public void PitFall()
         {
-
+            CurrentPlayer.Health -= 20;
+            Console.WriteLine(CurrentRoom.Description);
+            SkeletonFight();
+            CurrentRoom.Description = "The room around you is as black as night, but you can see some light shining from under the door to your West.";
+        }
+        public void Crown()
+        {
+            Console.WriteLine("You place the crown upon your head. You feel as though you are being lifted out of your body to ascend. The skyline turns deep red and the ground becomes flames. Only you can control the flames. You are now the ruler of the known world!");
         }
         public void GameOver()
         {
@@ -531,14 +689,18 @@ namespace CastleGrimtol.Project
         }
         public void UseItem(Item item)
         {
-            for (int i = 0; i < item.Rooms.Count; i++)
+            Console.WriteLine(item.Name);
+            Console.WriteLine(item.Rooms.Count);
+            Console.ReadLine();
+
+            for (int i = 0; i < CurrentRoom.UsableItems.Count; i++)
             {
-                Room room = item.Rooms[i];
-                if (CurrentRoom.Name == room.Name)
+                Item usable = CurrentRoom.UsableItems[i];
+                if (item.Name == usable.Name)
                 {
                     if (item.Name == "brassKey")
                     {
-                        CurrentRoom.IsLocked = false;
+                        CurrentRoom.Exits["s"].IsLocked = false;
                         CurrentPlayer.Inventory.Remove(item);
                     }
                     else if (item.Name == "book")
@@ -549,6 +711,15 @@ namespace CastleGrimtol.Project
                     else if (item.Name == "wine")
                     {
                         Intoxicated();
+                        CurrentPlayer.Inventory.Remove(item);
+                    }
+                    else if (item.Name == "food")
+                    {
+                        if (CurrentPlayer.Health < 70)
+                        {
+                            CurrentPlayer.Health += 15;
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
                     }
                     else if (item.Name == "rock")
                     {
@@ -556,20 +727,26 @@ namespace CastleGrimtol.Project
                         CurrentPlayer.Inventory.Remove(item);
                         CurrentRoom.Items.Add(item);
                     }
-                    else if(item.Name == "healthPotion")
+                    else if (item.Name == "healthPotion")
                     {
-                        if(CurrentPlayer.Health < 60){
+                        if (CurrentPlayer.Health < 60)
+                        {
                             CurrentPlayer.Health += 40;
                             Console.WriteLine($"You now have {CurrentPlayer.Health} remaining");
+                            CurrentPlayer.Inventory.Remove(item);
                         }
                         else
                         {
                             Console.WriteLine($"You currently have {CurrentPlayer.Health}. It would be pointless to use this. You have plenty of health left. Try again when your health is less than 60");
                         }
                     }
+                    else if (item.Name == "crownOfFire")
+                    {
+                        Crown();
+                    }
                     else if (item.Name == "rustyKnife" || item.Name == "rustyDagger")
                     {
-                        if (CurrentEnemy.Name == "Warrior" || CurrentEnemy.Name == "Ranger")
+                        if (CurrentEnemy.Name == "Skeleton Warrior" || CurrentEnemy.Name == "Skeleton Ranger")
                         {
                             if (CurrentEnemy.Health > 0)
                             {
@@ -583,7 +760,7 @@ namespace CastleGrimtol.Project
                         }
                         else if (CurrentEnemy.Name == "Troll")
                         {
-                             if (CurrentEnemy.Health > 0)
+                            if (CurrentEnemy.Health > 0)
                             {
                                 CurrentEnemy.Health -= 15;
                                 Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
@@ -595,7 +772,7 @@ namespace CastleGrimtol.Project
                         }
                         else if (CurrentEnemy.Name == "Undead King")
                         {
-                             if (CurrentEnemy.Health > 0)
+                            if (CurrentEnemy.Health > 0)
                             {
                                 CurrentEnemy.Health -= 10;
                                 Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
@@ -622,7 +799,7 @@ namespace CastleGrimtol.Project
                         }
                         else if (CurrentEnemy.Name == "Troll")
                         {
-                             if (CurrentEnemy.Health > 0)
+                            if (CurrentEnemy.Health > 0)
                             {
                                 CurrentEnemy.Health -= 34;
                                 Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
@@ -634,7 +811,7 @@ namespace CastleGrimtol.Project
                         }
                         else if (CurrentEnemy.Name == "Undead King")
                         {
-                             if (CurrentEnemy.Health > 0)
+                            if (CurrentEnemy.Health > 0)
                             {
                                 CurrentEnemy.Health -= 20;
                                 Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");

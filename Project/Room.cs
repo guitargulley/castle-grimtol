@@ -8,7 +8,9 @@ namespace CastleGrimtol.Project
         public string Description { get; set; }
         public bool IsLocked { get; set; }
         public bool Visited { get; set; }
+        public Enemy Enemy { get; set; }
         public List<Item> Items { get; set; }
+        public List<Item> UsableItems { get; set; }
 
         public Dictionary<string, Room> Exits { get; set; }
 
@@ -24,7 +26,9 @@ namespace CastleGrimtol.Project
             IsLocked = false;
             Visited = false;
             Items = new List<Item>();
+            UsableItems = new List<Item>();
             Exits = new Dictionary<string, Room>();
+            Enemy = null;
         }
     }
 }

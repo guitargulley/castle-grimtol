@@ -12,6 +12,7 @@ namespace CastleGrimtol
             Game game = new Game();
             game.Setup();
             bool playing = true;
+        
 
             while (playing)
             {
