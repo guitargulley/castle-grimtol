@@ -68,6 +68,7 @@ namespace CastleGrimtol.Project
                 if (!CurrentRoom.Exits[direction].IsLocked)
                 {
                     var PrevRoom = CurrentRoom;
+                    Console.Clear();
                     CurrentRoom = CurrentRoom.Exits[direction];
                     if (CurrentRoom.Name == "Room 1")
                     {
@@ -86,10 +87,10 @@ namespace CastleGrimtol.Project
                         }
 
                     }
-                    // else if (CurrentRoom.Name == "Room 3 South")
-                    // {
-                        
-                    // }
+                    else if (CurrentRoom.Name == "Room 3 South")
+                    {
+                        BookRoom();
+                    }
                     else if (CurrentRoom.Name == "Dungeon Cell" && !CurrentRoom.Visited)
                     {
                         SkeletonFight();
@@ -119,6 +120,7 @@ namespace CastleGrimtol.Project
                 }
                 else
                 {
+                    Console.Clear();
                     Console.WriteLine("This Room Appears to be locked. Use the appropriate key to unlock this door.");
                     Look();
                 }
@@ -132,18 +134,29 @@ namespace CastleGrimtol.Project
                 Item item = CurrentRoom.Items[i];
                 if (item.Name.ToLower() == option)
                 {
-                    if(option == "book")
+                    if (option == "book")
                     {
                         CurrentPlayer.Inventory.Add(item);
                         Console.Clear();
                         Console.WriteLine($"{item.Name} has been added to your inventory");
                         CurrentRoom.Items.Remove(item);
-                        RemoveBook();
+                        RemoveBook(item);
                     }
-                    CurrentPlayer.Inventory.Add(item);
-                    Console.Clear();
-                    Console.WriteLine($"{item.Name} has been added to your inventory");
-                    CurrentRoom.Items.Remove(item);
+                    else if (option == "rock" && CurrentRoom.Name == "Room 3 South")
+                    {
+                        CurrentPlayer.Inventory.Add(item);
+                        Console.Clear();
+                        Console.WriteLine($"{item.Name} has been added to your inventory");
+                        CurrentRoom.Items.Remove(item);
+                        RemoveBook(item);
+                    }
+                    else
+                    {
+                        CurrentPlayer.Inventory.Add(item);
+                        Console.Clear();
+                        Console.WriteLine($"{item.Name} has been added to your inventory");
+                        CurrentRoom.Items.Remove(item);
+                    }
                 }
                 else
                 {
@@ -225,8 +238,8 @@ namespace CastleGrimtol.Project
             Room Room9 = new Room("Upstairs Master Suite", "This Room is locked with a Gold Lock. You can hear something through the walls, but you cannot make out what it is.");
             Room Balcony = new Room("Balcony", "You see the great Crown of Fire sitting on a large table.");
             Room Ladder = new Room("Ladder", "The ladder takes you through a secret passage into the dungeon");
-            Room Room10 = new Room("Dungeon Room 10", "Secret entrance to dungeon");
-            Room Room10W = new Room("Duneon Room 10 west", "The door to the west is locked by a silver padlock.");
+            Room Room10 = new Room("Dungeon Room 10", "Secret entrance to dungeon. The door to the west is locked by a silver padlock.");
+            Room Room10W = new Room("Duneon Room 10 west", "Narrow hallway, exits to the west and east.");
             Room Room11 = new Room("Dungeon Hallway North", "A long hallway dimly lit by candles. there are rooms to your East and your West. The hallway continues to the south");
             Room Room12 = new Room("Dungeon Hallway", "A long hallway dimly lit by candles. There are rooms to your East, and West. The hallway continues to your North and South");
             Room Room13 = new Room("Dungeon Hallway South", "A long hallway dimly lit by candles. There are rooms to your East and West. The door to your west appears to have a steel lock on it. The hallway continues to your North");
@@ -241,8 +254,7 @@ namespace CastleGrimtol.Project
 
             Room4s.IsLocked = true;
             Room5.IsLocked = true;
-            Room10.IsLocked = true;
-            Room11.IsLocked = true;
+            Room10W.IsLocked = true;
 
             Room9.IsLocked = true;
             Room17.IsLocked = true;
@@ -309,10 +321,12 @@ namespace CastleGrimtol.Project
                 room.UsableItems.Add(crown);
             }
 
+            Room13.UsableItems.Add(steelKey);
             Room4.UsableItems.Add(brassKey);
-            Room11.UsableItems.Add(silverKey);
+            Room10.UsableItems.Add(silverKey);
             Room4.UsableItems.Add(book);
             Room3S.UsableItems.Add(rock);
+            Room3S.UsableItems.Add(book);
             Room7N.UsableItems.Add(goldKey);
 
 
@@ -356,7 +370,7 @@ namespace CastleGrimtol.Project
             StairCase2.Exits.Add("up", Room2N);
             StairCase2.Exits.Add("down", Room17);
 
-            Room3.Exits.Add("e", Room0);
+            Room3.Exits.Add("e", Room0N);
             Room3.Exits.Add("s", Room3S);
 
             Room3S.Exits.Add("n", Room3);
@@ -369,6 +383,10 @@ namespace CastleGrimtol.Project
 
             Room4s.Exits.Add("w", Room4);
             Room4s.Exits.Add("e", Ladder);
+
+            Room4s.Items.Add(battleAxe);
+            Room4s.Items.Add(greatSword);
+            Room4s.Items.Add(healthPotion);
 
             Ladder.Exits.Add("down", Room10);
 
@@ -558,6 +576,23 @@ namespace CastleGrimtol.Project
 
         public void SecretRoom()
         {
+            while (CurrentRoom.Items.Count != 0)
+            {
+                CurrentRoom.Description = "As the bookshelf swing open, a large golden chest is revealed. You can exit the room to your West";
+                Console.WriteLine(CurrentRoom.Description);
+                GetRoomItems(CurrentRoom);
+                string next = GetUserInput();
+                HandleUserInput(next);
+            }
+            if (CurrentRoom.Items.Count == 0)
+            {
+                CurrentRoom.Description = "The large gold chest is empty. A ladder going down appears to the east";
+                Console.WriteLine(CurrentRoom.Description);
+                GetRoomItems(CurrentRoom);
+                string next = GetUserInput();
+                HandleUserInput(next);
+            }
+
 
         }
         public void DisplayCase()
@@ -572,6 +607,7 @@ namespace CastleGrimtol.Project
             CurrentRoom.Visited = true;
             while (inBattle)
             {
+                CheckInventory();
                 Console.WriteLine(CurrentRoom.Enemy.Name + "-" + CurrentRoom.Enemy.Health);
                 Console.WriteLine(CurrentPlayer.Name + "-" + CurrentPlayer.Health);
                 if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health > 0)
@@ -621,24 +657,38 @@ namespace CastleGrimtol.Project
         {
 
         }
-        public void RemoveBook()
+        public void BookRoom()
         {
-            Room nextRoom = CurrentRoom.Exits["n"];
-            nextRoom.Exits["e"].IsLocked = true;
-            while(nextRoom.Exits["e"].IsLocked)
+            CurrentRoom.Description = $"In the middle of the large desk in front of you sits a large heavy {CurrentRoom.Items[0].Name}. The book looks important.";
+            Console.WriteLine(CurrentRoom.Description);
+            GetRoomItems(CurrentRoom);
+            string next = GetUserInput();
+            HandleUserInput(next);
+        }
+        public void RemoveBook(Item item)
+        {
+            Console.WriteLine("you got here");
+            CurrentRoom.Exits["n"].IsLocked = true;
+            Console.WriteLine("You made it to remove room");
+            CurrentRoom.Description = $"As you lift the {item.Name} up, a large steel gate drops behind you!. You are trapped in this small room!. On the desk you notice that there is a small pressure plate where the book was sitting. The door is controlled by this plate.";
+            while (CurrentRoom.Exits["n"].IsLocked)
             {
                 Console.WriteLine(CurrentRoom.Description);
+
                 string nextMove = GetUserInput();
                 HandleUserInput(nextMove);
-                for(int i=0; i<CurrentRoom.Items.Count; i++)
+                for (int i = 0; i < CurrentRoom.Items.Count; i++)
                 {
-                    Item item = CurrentRoom.Items[i];
-                    if(item.Name == "book" || item.Name == "rock")
+                    Item cItem = CurrentRoom.Items[i];
+                    if (cItem.Name == "book" || cItem.Name == "rock")
                     {
-                        nextRoom.Exits["e"].IsLocked = false;
+                        CurrentRoom.Exits["n"].IsLocked = false;
+                        CurrentRoom.Description = "The gate slowly lifts up. you can now move around freely. exit to the North";
+                        continue;
                     }
                 }
             }
+
 
 
 
@@ -717,9 +767,7 @@ namespace CastleGrimtol.Project
         }
         public void UseItem(Item item)
         {
-            Console.WriteLine(item.Name);
-            Console.WriteLine(item.Rooms.Count);
-            Console.ReadLine();
+
 
             for (int i = 0; i < CurrentRoom.UsableItems.Count; i++)
             {
@@ -731,18 +779,28 @@ namespace CastleGrimtol.Project
                         CurrentRoom.Exits["s"].IsLocked = false;
                         CurrentPlayer.Inventory.Remove(item);
                     }
+                    else if(item.Name == "silverKey")
+                    {
+                        CurrentRoom.Exits["w"].IsLocked = false;
+                        CurrentPlayer.Inventory.Remove(item);
+                    }
+                    else if(item.Name == "steelKey")
+                    {
+                        CurrentRoom.Exits["w"].IsLocked = false;
+                        CurrentPlayer.Inventory.Remove(item);
+                        CurrentRoom.Exits["w"].Description = "A small dimly lit room. Stairs to your west, and door to your right";
+                    }
                     else if (item.Name == "book")
                     {
                         if (CurrentRoom.Name == "Room 3 South")
                         {
-                            Room nextRoom = CurrentRoom.Exits["n"];
-                            nextRoom.Exits["e"].IsLocked = false;
+                            CurrentRoom.Exits["n"].IsLocked = false;
                             CurrentRoom.Items.Add(item);
                             CurrentPlayer.Inventory.Remove(item);
                         }
                         else
                         {
-                            CurrentRoom.Exits["n"].IsLocked = false;
+                            CurrentRoom.Exits["e"].IsLocked = false;
                             CurrentPlayer.Inventory.Remove(item);
                         }
                     }
@@ -763,8 +821,7 @@ namespace CastleGrimtol.Project
                     {
                         if (CurrentRoom.Name == "Room 3 South")
                         {
-                            Room nextRoom = CurrentRoom.Exits["n"];
-                            nextRoom.Exits["e"].IsLocked = false;
+                            CurrentRoom.Exits["n"].IsLocked = false;
                             CurrentRoom.Items.Add(item);
                             CurrentPlayer.Inventory.Remove(item);
                         }
@@ -827,7 +884,7 @@ namespace CastleGrimtol.Project
                     }
                     else if (item.Name == "greatSword" || item.Name == "battleAxe")
                     {
-                        if (CurrentEnemy.Name == "Warrior" || CurrentEnemy.Name == "Ranger")
+                        if (CurrentEnemy.Name == "Skeleton Warrior" || CurrentEnemy.Name == "Skeleton Ranger")
                         {
                             if (CurrentEnemy.Health > 0)
                             {
