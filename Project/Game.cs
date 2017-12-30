@@ -86,10 +86,10 @@ namespace CastleGrimtol.Project
                         }
 
                     }
-                    else if (CurrentRoom.Name == "Room 3S")
-                    {
-                        RemoveBook();
-                    }
+                    // else if (CurrentRoom.Name == "Room 3 South")
+                    // {
+                        
+                    // }
                     else if (CurrentRoom.Name == "Dungeon Cell" && !CurrentRoom.Visited)
                     {
                         SkeletonFight();
@@ -104,7 +104,7 @@ namespace CastleGrimtol.Project
                     {
                         TrapDoor();
                     }
-                    else if (CurrentRoom.Name == "Room 4E")
+                    else if (CurrentRoom.Name == "Room 4s")
                     {
                         SecretRoom();
                     }
@@ -132,6 +132,14 @@ namespace CastleGrimtol.Project
                 Item item = CurrentRoom.Items[i];
                 if (item.Name.ToLower() == option)
                 {
+                    if(option == "book")
+                    {
+                        CurrentPlayer.Inventory.Add(item);
+                        Console.Clear();
+                        Console.WriteLine($"{item.Name} has been added to your inventory");
+                        CurrentRoom.Items.Remove(item);
+                        RemoveBook();
+                    }
                     CurrentPlayer.Inventory.Add(item);
                     Console.Clear();
                     Console.WriteLine($"{item.Name} has been added to your inventory");
@@ -352,6 +360,8 @@ namespace CastleGrimtol.Project
             Room3.Exits.Add("s", Room3S);
 
             Room3S.Exits.Add("n", Room3);
+
+            Room3S.Items.Add(book);
 
             Room4.Exits.Add("w", Room0N);
             Room4.Exits.Add("e", Room4s);
@@ -574,7 +584,7 @@ namespace CastleGrimtol.Project
                         Console.Clear();
                         Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took a substantial amount of damage!");
                         CurrentPlayer.Health -= 8;
-                        
+
                     }
                 }
                 else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
@@ -583,7 +593,7 @@ namespace CastleGrimtol.Project
                     Console.WriteLine($"With the final blow you have defeated the {CurrentRoom.Enemy.Name}");
                     inBattle = false;
                     CurrentRoom.Enemy = null;
-                    
+
                     continue;
                 }
                 else if (CurrentPlayer.Health <= 0 && CurrentRoom.Enemy.Health > 0)
@@ -613,6 +623,24 @@ namespace CastleGrimtol.Project
         }
         public void RemoveBook()
         {
+            Room nextRoom = CurrentRoom.Exits["n"];
+            nextRoom.Exits["e"].IsLocked = true;
+            while(nextRoom.Exits["e"].IsLocked)
+            {
+                Console.WriteLine(CurrentRoom.Description);
+                string nextMove = GetUserInput();
+                HandleUserInput(nextMove);
+                for(int i=0; i<CurrentRoom.Items.Count; i++)
+                {
+                    Item item = CurrentRoom.Items[i];
+                    if(item.Name == "book" || item.Name == "rock")
+                    {
+                        nextRoom.Exits["e"].IsLocked = false;
+                    }
+                }
+            }
+
+
 
         }
         public void PaintingRiddle()
@@ -705,8 +733,18 @@ namespace CastleGrimtol.Project
                     }
                     else if (item.Name == "book")
                     {
-                        CurrentRoom.Exits["n"].IsLocked = false;
-                        CurrentPlayer.Inventory.Remove(item);
+                        if (CurrentRoom.Name == "Room 3 South")
+                        {
+                            Room nextRoom = CurrentRoom.Exits["n"];
+                            nextRoom.Exits["e"].IsLocked = false;
+                            CurrentRoom.Items.Add(item);
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
+                        else
+                        {
+                            CurrentRoom.Exits["n"].IsLocked = false;
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
                     }
                     else if (item.Name == "wine")
                     {
@@ -723,9 +761,13 @@ namespace CastleGrimtol.Project
                     }
                     else if (item.Name == "rock")
                     {
-                        CurrentRoom.Exits["n"].IsLocked = false;
-                        CurrentPlayer.Inventory.Remove(item);
-                        CurrentRoom.Items.Add(item);
+                        if (CurrentRoom.Name == "Room 3 South")
+                        {
+                            Room nextRoom = CurrentRoom.Exits["n"];
+                            nextRoom.Exits["e"].IsLocked = false;
+                            CurrentRoom.Items.Add(item);
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
                     }
                     else if (item.Name == "healthPotion")
                     {
