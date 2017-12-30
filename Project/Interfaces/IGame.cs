@@ -11,7 +11,7 @@ namespace CastleGrimtol.Project
         void Reset();
 
         //No need to Pass a room since Items can only be used in the CurrentRoom
-        void UseItem(string itemName);
+        void UseItem(Item item);
 
     }
 }
