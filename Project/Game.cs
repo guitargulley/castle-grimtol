@@ -198,10 +198,13 @@ namespace CastleGrimtol.Project
             Room5.IsLocked = true;
             Room10.IsLocked = true;
 
+            GameRooms.Add(Painting);
+            GameRooms.Add(StairCase);
+            GameRooms.Add(Ladder);
+            GameRooms.Add(Balcony);
             GameRooms.Add(Room0);
             GameRooms.Add(Room0N);
             GameRooms.Add(Room1);
-            GameRooms.Add(Painting);
             GameRooms.Add(Room2);
             GameRooms.Add(Room2N);
             GameRooms.Add(Room3);
@@ -209,9 +212,21 @@ namespace CastleGrimtol.Project
             GameRooms.Add(Room4);
             GameRooms.Add(Room5);
             GameRooms.Add(Room5E);
-            GameRooms.Add(StairCase);
+            GameRooms.Add(Room6);
+            GameRooms.Add(Room7);
+            GameRooms.Add(Room7N);
+            GameRooms.Add(Room8);
+            GameRooms.Add(Room9);
             GameRooms.Add(Room10);
+            GameRooms.Add(Room10W);
+            GameRooms.Add(Room11);
+            GameRooms.Add(Room12);
+            GameRooms.Add(Room13);
             GameRooms.Add(Room14);
+            GameRooms.Add(Room15);
+            GameRooms.Add(Room16);
+            GameRooms.Add(Room17);
+            GameRooms.Add(Room18);
 
             brassKey.Rooms.Add(Room4);
             silverKey.Rooms.Add(Room11);
@@ -230,36 +245,25 @@ namespace CastleGrimtol.Project
 
             Room0.Exits.Add("w", Room2);
             Room0.Exits.Add("e", Room1);
-            Room0.Exits.Add("s", Room0);
             Room0.Exits.Add("n", Room0N);
 
             Room0N.Exits.Add("w", Room3);
             Room0N.Exits.Add("e", Room4);
             Room0N.Exits.Add("s", Room0);
-            Room0N.Exits.Add("n", Room0N);
 
             Room1.Exits.Add("w", Room0);
             Room1.Exits.Add("e", Painting);
-            Room1.Exits.Add("s", Room1);
-            Room1.Exits.Add("n", Room1);
 
             Room1.Items.Add(brassKey);
 
 
             Painting.Exits.Add("w", Room1);
-            Painting.Exits.Add("e", Painting);
-            Painting.Exits.Add("s", Painting);
-            Painting.Exits.Add("n", Painting);
 
             Room2.Exits.Add("w", StairCase);
             Room2.Exits.Add("e", Room0);
-            Room2.Exits.Add("s", Room2);
             Room2.Exits.Add("n", Room2N);
 
-            Room2N.Exits.Add("w", Room2N);
-            Room2N.Exits.Add("e", Room2N);
             Room2N.Exits.Add("s", Room2);
-            Room2N.Exits.Add("n", Room2N);
 
             Room2N.Items.Add(wine);
             Room2N.Items.Add(food);
@@ -268,34 +272,66 @@ namespace CastleGrimtol.Project
             StairCase.Exits.Add("up", Room6);
             StairCase.Exits.Add("down", Room17);
 
-            Room3.Exits.Add("w", Room3);
             Room3.Exits.Add("e", Room0);
-            Room3.Exits.Add("s", Room3);
-            Room3.Exits.Add("n", Room3);
-
-            Room3S.Exits.Add("w", Room3S);
-            Room3S.Exits.Add("e", Room3S);
-            Room3S.Exits.Add("s", Room3S);
             Room3S.Exits.Add("n", Room3);
 
-            Room4.Exits.Add("w", Room2);
+            Room4.Exits.Add("w", Room0N);
             Room4.Exits.Add("e", Room4s);
             Room4.Exits.Add("s", Room5);
-            Room4.Exits.Add("n", Room0);
 
             Room4s.Exits.Add("w", Room4);
             Room4s.Exits.Add("e", Ladder);
-            Room4s.Exits.Add("s", Room4s);
-            Room4s.Exits.Add("n", Room4s);
 
             Ladder.Exits.Add("down", Room10);
 
-            Room5.Exits.Add("w", Room5);
             Room5.Exits.Add("e", Room5E);
-            Room5.Exits.Add("s", Room5);
             Room5.Exits.Add("n", Room4);
 
             Room5E.Exits.Add("down", Room14);
+            Room5E.Exits.Add("w", Room5);
+
+            Room6.Exits.Add("n", Room7);
+
+            Room7.Exits.Add("w", Room8);
+            Room7.Exits.Add("n", Room7N);
+            Room7.Exits.Add("s", Room6);
+
+            Room7N.Exits.Add("s", Room7);
+            Room7N.Exits.Add("w", Room9);
+
+            Room8.Exits.Add("e", Room7);
+
+            Room9.Exits.Add("w", Balcony);
+            Room9.Exits.Add("e", Room7N);
+
+            Room10.Exits.Add("w", Room10W);
+
+            Room10W.Exits.Add("e", Room10);
+            Room10W.Exits.Add("w", Room11);
+
+            Room11.Exits.Add("w", Room18);
+            Room11.Exits.Add("e", Room10W);
+            Room11.Exits.Add("s", Room12);
+
+            Room12.Exits.Add("n", Room11);
+            Room12.Exits.Add("w", Room15);
+            Room12.Exits.Add("e", Room14);
+            Room12.Exits.Add("s", Room13);
+
+            Room13.Exits.Add("n", Room12);
+            Room13.Exits.Add("w", Room17);
+            Room13.Exits.Add("e", Room16);
+
+            Room14.Exits.Add("w", Room12);
+
+            Room15.Exits.Add("e", Room12);
+
+            Room16.Exits.Add("w", Room13);
+
+            Room17.Exits.Add("w", StairCase);
+            Room17.Exits.Add("e", Room13);
+
+            Room18.Exits.Add("e", Room11);
 
             Enemy warrior = new Enemy("Skeleton Warrior",Room15);
             Enemy ranger = new Enemy("Skeleton Ranger", Room8);
@@ -509,6 +545,10 @@ namespace CastleGrimtol.Project
                     {
                         CurrentRoom.Exits["n"].IsLocked = false;
                         CurrentPlayer.Inventory.Remove(item);
+                    }
+                    else if (item.Name == "wine")
+                    {
+                        Intoxicated();
                     }
                     else if (item.Name == "rock")
                     {
