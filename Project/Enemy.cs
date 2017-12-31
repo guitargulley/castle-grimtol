@@ -8,8 +8,6 @@ namespace CastleGrimtol.Project
         public int Health { get; set; }
         public Room Room { get; set; }
 
-
-
         public Enemy(string name, Room room)
         {
             Name = name;

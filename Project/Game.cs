@@ -16,6 +16,7 @@ namespace CastleGrimtol.Project
         {
             Console.WriteLine("Reset everything?");
             Console.ReadLine();
+            
         }
 
         internal void GetRoomItems(Room currentRoom)

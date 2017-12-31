@@ -7,13 +7,10 @@ namespace CastleGrimtol
     {
         public static void Main(string[] args)
         {
-
-
             Game game = new Game();
             game.Setup();
             bool playing = true;
         
-
             while (playing)
             {
                 Console.WriteLine(game.CurrentRoom.Description);
