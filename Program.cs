@@ -7,26 +7,41 @@ namespace CastleGrimtol
     {
         public static void Main(string[] args)
         {
-            Game game = new Game();
-            game.Setup();
-            bool playing = true;
-        
-            while (playing)
+            bool Playing = true;
+            while (Playing)
             {
-                Console.WriteLine(game.CurrentRoom.Description);
-                game.GetRoomItems(game.CurrentRoom);
-                // Console.WriteLine("This is the room at: " ,game.GameRooms[1].Name);
-                var userInput = game.GetUserInput().ToLower();
-                
-                game.HandleUserInput(userInput);
-                //TO QUIT THE GAME
-                 if (userInput == "q")
+                Game game = new Game();
+                Console.Clear();
+                game.Setup();
+                game.InGame = true;
+                while (game.InGame)
                 {
-                    playing = false;
-                    continue;
+                    if (!game.InGame)
+                    {
+                        game.HandleUserInput("q");
+
+                    }
+                    Console.WriteLine(game.CurrentRoom.Description);
+                    var userInput = game.GetUserInput().ToLower();
+
+                    game.HandleUserInput(userInput);
+                    //TO QUIT THE GAME
+                    if (userInput == "q")
+                    {
+                        game.InGame = false;
+                        continue;
+                    }
+                }
+                if (game.Replay)
+                {
+                    Playing = true;
+                    Console.Clear();
+                }
+                else
+                {
+                    Playing = false;
                 }
             }
-
         }
     }
 }

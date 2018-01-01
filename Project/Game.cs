@@ -6,17 +6,29 @@ namespace CastleGrimtol.Project
     public class Game : IGame
     {
         public Room CurrentRoom { get; set; }
+        public bool InGame { get; set; }
+        public bool Replay { get; set; }
         public Player CurrentPlayer { get; set; }
         public List<Room> GameRooms { get; set; }
         public List<Enemy> Enemies { get; set; }
         public Enemy CurrentEnemy { get; set; }
         public List<Item> GameItems { get; set; }
 
+
+        
         public void Reset()
         {
-            Console.WriteLine("Reset everything?");
-            Console.ReadLine();
-            
+            Console.WriteLine("Play Again? Y/N");
+            string userInput = Console.ReadLine().ToLower();
+            if(userInput == "y")
+            {
+                Replay = true;
+                InGame = false;
+            }
+            else if(userInput == "n")
+            {
+                InGame = false;
+            }
         }
 
         internal void GetRoomItems(Room currentRoom)
@@ -56,10 +68,7 @@ namespace CastleGrimtol.Project
         {
 
         }
-        public void Start()
-        {
-
-        }
+    
         public void Go(string direction)
         {
             // given a string direction...
@@ -108,9 +117,17 @@ namespace CastleGrimtol.Project
                     {
                         SecretRoom();
                     }
-                    else if (CurrentRoom.Name == "Room9")
+                    else if (CurrentRoom.Name == "Display Case")
                     {
-                        CurrentEnemy = Enemies[3];
+                        if (CurrentRoom.Items.Count != 0)
+                        {
+                            Console.WriteLine("The door shuts behind you. You cannot exit the room.");
+                            DisplayCase();
+                        }
+                    }
+                    else if (CurrentRoom.Name == "Upstairs Master Suite")
+                    {
+                        Console.WriteLine("");
                         BossFight();
                     }
                 }
@@ -171,6 +188,7 @@ namespace CastleGrimtol.Project
 
         public void Setup()
         {
+            Replay = false;
             Console.WriteLine("Halt traveler. Identify yourself.");
             Console.Write("I go by: ");
             String player = Console.ReadLine();
@@ -185,7 +203,7 @@ namespace CastleGrimtol.Project
             Item decorativeKey = new Item("decorativeKey", "This key is absolutely useless.");
             Item steelKey = new Item("steelKey", "unlocks room 17");
             Item silverKey = new Item("silverKey", "unlocks many of the cells in the dungeon.");
-            Item goldKey = new Item("goldKey", "Unlocks the final room");
+            Item goldKey = new Item("goldKey", "Unlocks the final room of the game");
             Item book = new Item("book", "Used to unlock the secret room behind the book case in room 4");
             Item wine = new Item("wine", "Disorients player, making player go in a random direction for 3 moves");
             Item food = new Item("food", "Food can be used to distract animals, as well as provide small health regeneration");
@@ -215,7 +233,7 @@ namespace CastleGrimtol.Project
             Room Room2N = new Room("Room 2 North", "First floor, Large table with food and drink. There is Also a large heavy rock lying on the ground.");
             Room Room3 = new Room("Room 3", "First Floor, Room has large desk with a book sitting on it to the South");
             Room Room3S = new Room("Room 3 South", "In the middle of the large desk in front of you sits a large heavy book. The book looks important.");
-            Room Room4 = new Room("Room 4", "First Floor, Room has Door to South, and Bookshelf to East");
+            Room Room4 = new Room("Room 4", "First Floor, Room has Door to South with a brass padlock on it, and Bookshelf to East");
             Room Room4s = new Room("Room 4s", "Secret room off of room 4, requires book to open bookshelf");
             Room Room5 = new Room("Room 5", "First Floor, room has a large luxurious rug on the ground spanning the width of the room. to the East is a large desk, you can see a large stack of gold coins sitting on it.");
             Room Room5E = new Room("Room 5E", "TRAP DOOR!");
@@ -223,9 +241,9 @@ namespace CastleGrimtol.Project
             Room StairCase2 = new Room("Stairs", "Stairs from Fisrt Floor to Dungeon");
             Room Room6 = new Room("Upstairs Hallway", "You reached the second floor, you are in a long narrow hallway. There is no source of light. You stumble through this hallway until you can see light. The hallway continues to your North");
             Room Room7 = new Room("Upstairs Hallway South", "There are hundreds of lit candles covering the walls of this hallway. there is a room to the West. The hallway continues to the North and South");
-            Room Room7N = new Room("Upstairs Hallway North", "There are hundreds of lit candles covering the walls of this hallway. there is a Locked room to the West. The hallway continues to the South");
+            Room Room7N = new Room("Upstairs Hallway North", "There are hundreds of lit candles covering the walls of this hallway. there is a room to the West with a gold padlock on it. The hallway continues to the South");
             Room Room8 = new Room("Upstairs Reading Room", "You enter the room and are instantly attacked by a Skeleton Ranger! You must fight!");
-            Room Room9 = new Room("Upstairs Master Suite", "This Room is locked with a Gold Lock. You can hear something through the walls, but you cannot make out what it is.");
+            Room Room9 = new Room("Upstairs Master Suite", "There is a large Throne sitting in the middle of the room. There is a balcony to the West and the hallway to the East.");
             Room Balcony = new Room("Balcony", "You see the great Crown of Fire sitting on a large table.");
             Room Ladder = new Room("Ladder", "The ladder takes you through a secret passage into the dungeon");
             Room Room10 = new Room("Dungeon Room 10", "Secret entrance to dungeon. The door to the west is locked by a silver padlock.");
@@ -235,7 +253,8 @@ namespace CastleGrimtol.Project
             Room Room13 = new Room("Dungeon Hallway South", "A long hallway dimly lit by candles. There are rooms to your East and West. The door to your west appears to have a steel lock on it. The hallway continues to your North");
             Room Room14 = new Room("Dungeon Room 14", $"you fall hearing a crunch as you hit the hard cement floor. You have sustained serious injury. You have {CurrentPlayer.Health} remaining. You stand up only to be greeted by a large Troll!");
             Room Room15 = new Room("Dungeon Cell", "You walk into an old dungeon cell. You are instantly greeted by a Skeleton Warrior!");
-            Room Room16 = new Room("Dungeon Display Room", "You see a large display case with a floating gold key inside of it. There is an exit to your West");
+            Room Room16 = new Room("Dungeon Display Room", "You see a large display case with a floating gold key inside of it to the east. There is an exit to your West");
+            Room DisplayCase = new Room("Display Case", "The gold key grows as you approach it. The case is a triangular shape, each side of it has distinct writing on it. They appear to be riddles.");
             Room Room17 = new Room("Dungeon Stair Entrance", "You enter a small room that is very dimly lit. There is a door to the East, however it is locked with a steel padlock");
             Room Room18 = new Room("Dungeon Torture Room", "You enter a large room filled with various torture devices. Fragmented bones line the floor. Every step you take within these walls you hear Crunch, Crack, Snap. There is an exit to your East.");
 
@@ -252,6 +271,7 @@ namespace CastleGrimtol.Project
             GameRooms.Add(Painting);
             GameRooms.Add(StairCase);
             GameRooms.Add(StairCase2);
+            GameRooms.Add(DisplayCase);
             GameRooms.Add(Ladder);
             GameRooms.Add(Balcony);
             GameRooms.Add(Room0);
@@ -417,6 +437,11 @@ namespace CastleGrimtol.Project
             Room15.Items.Add(steelKey);
 
             Room16.Exits.Add("w", Room13);
+            Room16.Exits.Add("e", DisplayCase);
+
+            DisplayCase.Exits.Add("w", Room16);
+
+            DisplayCase.Items.Add(goldKey);
 
             Room17.Exits.Add("w", StairCase2);
             Room17.Exits.Add("e", Room13);
@@ -481,7 +506,6 @@ namespace CastleGrimtol.Project
                     continue;
                 }
             }
-            Start();
         }
         internal void HandleUserInput(string userInput)
         {
@@ -559,20 +583,153 @@ namespace CastleGrimtol.Project
 
         public void DisplayCase()
         {
+            Console.WriteLine($@"
+            To collect this key for your quest,
+            You must prove to be the best.
+            On each side there is a clue,
+            Correct answers will let you through.
 
+            You have 3 guesses for each riddle.
+            ");
+            int guess = 0;
+            string input = "";
+            bool inRiddles = true;
+            bool riddle1 = false;
+            bool riddle2 = false;
+            bool riddle3 = false;
+            while (inRiddles)
+            {
+                if (!riddle1)
+                {
+                    if (guess < 3)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($@"
+                        What word contains all of the twenty six letters?
+                        ");
+                        Console.WriteLine($"You have {3 - guess} guesses remaining");
+                        Console.Write("What is your guess?:");
+                        input = Console.ReadLine().ToLower();
+                        if (input == "alphabet" || input == "the alphabet")
+                        {
+                            Console.WriteLine("You have passed the first test of three, you have 2 riddles remaining to retrieve your prize.");
+                            riddle1 = true;
+                            guess = 0;
+                        }
+                        else if (input != "alphabet" || input != "the alphabet")
+                        {
+                            guess++;
+                            Console.WriteLine($"{input} is not the correct answer.");
+                            if (guess == 3)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("The room has completely filled up with the toxic gas. You no longer can breathe. You have been poisoned and die.");
+                        GameOver();
+                    }
+                }
+                else if (riddle1 == true && riddle2 == false)
+                {
+                    if (guess < 3)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($@"
+                        I turn everything around without moving. What am I?
+                        ");
+                        Console.WriteLine($"You have {3 - guess} guesses remaining");
+                        Console.Write("What is your guess?:");
+                        input = Console.ReadLine().ToLower();
+                        if (input == "mirror" || input == "a mirror")
+                        {
+                            Console.WriteLine("You have passed the first test of three, you have 2 riddles remaining to retrieve your prize.");
+                            riddle2 = true;
+                            guess = 0;
+                        }
+                        else if (input != "mirror" || input != "a mirror")
+                        {
+                            guess++;
+                            Console.WriteLine($"{input} is not the correct answer.");
+                            if (guess == 3)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("The room has completely filled up with the toxic gas. You no longer can breathe. You have been poisoned and die.");
+                        GameOver();
+                    }
+                }
+                else if (riddle1 == true && riddle2 == true && riddle3 == false)
+                {
+                    if (guess < 3)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($@"
+                        What cannot talk but will always reply when spoken to?
+                        ");
+                        Console.WriteLine($"You have {3 - guess} guesses remaining");
+                        Console.Write("What is your guess?:");
+                        input = Console.ReadLine().ToLower();
+                        if (input == "echo" || input == "an echo")
+                        {
+                            Console.WriteLine("You have passed the first test of three, you have 2 riddles remaining to retrieve your prize.");
+                            riddle3 = true;
+                            guess = 0;
+                            inRiddles = false;
+                            CurrentRoom.Description = "There is a large pillar in the middle of the room. There is an exit to your West";
+                            CurrentRoom.Exits["w"].Description = "There is an exit to your West, and an empty room to your East";
+                        }
+                        else if (input != "echo" || input != "an echo")
+                        {
+                            guess++;
+                            Console.WriteLine($"{input} is not the correct answer.");
+                            if (guess == 3)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("The room has completely filled up with the toxic gas. You no longer can breathe. You have been poisoned and die.");
+                        GameOver();
+                    }
+                }
+            }
+            Console.Clear();
+            Console.WriteLine("The display case glass walls retract into a large stone pillar. The key is now able to be picked up.");
         }
 
         public void SkeletonFight()
         {
+            CheckInventory();
             Console.WriteLine($"The {CurrentRoom.Enemy.Name} takes a swing at you but misses!");
             CurrentEnemy = CurrentRoom.Enemy;
             bool inBattle = true;
             CurrentRoom.Visited = true;
             while (inBattle)
             {
-                CheckInventory();
-                Console.WriteLine(CurrentRoom.Enemy.Name + "-" + CurrentRoom.Enemy.Health);
-                Console.WriteLine(CurrentPlayer.Name + "-" + CurrentPlayer.Health);
+                Console.WriteLine($@"
+    {CurrentRoom.Enemy.Name} - {CurrentRoom.Enemy.Health} : {CurrentPlayer.Name} - {CurrentPlayer.Health}
+                ");
                 if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health > 0)
                 {
                     Console.WriteLine("What would you like to do?");
@@ -580,14 +737,14 @@ namespace CastleGrimtol.Project
                     HandleUserInput(fight);
                     if (CurrentRoom.Enemy.Health > 0)
                     {
-                        Console.Clear();
+                        CheckInventory();
                         Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took a substantial amount of damage!");
                         CurrentPlayer.Health -= 8;
                     }
                 }
                 else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
                 {
-                    Console.Clear();
+                    CheckInventory();
                     Console.WriteLine($"With the final blow you have defeated the {CurrentRoom.Enemy.Name}");
                     inBattle = false;
                     CurrentRoom.Enemy = null;
@@ -604,12 +761,43 @@ namespace CastleGrimtol.Project
 
         public void BossFight()
         {
-            for (int i = 0; i < Enemies.Count; i++)
+            CheckInventory();
+            Console.WriteLine($"The {CurrentRoom.Enemy.Name} takes a swing at you, the sword makes contact with you!");
+            CurrentPlayer.Health -= 5;
+            CurrentEnemy = CurrentRoom.Enemy;
+            bool inBattle = true;
+            CurrentRoom.Visited = true;
+            while (inBattle)
             {
-                Enemy enemy = Enemies[i];
-                if (enemy.Name == "Undead King")
+                Console.WriteLine($@"
+    {CurrentRoom.Enemy.Name} - {CurrentRoom.Enemy.Health} : {CurrentPlayer.Name} - {CurrentPlayer.Health}
+                ");
+                
+                if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health > 0)
                 {
-                    CurrentEnemy = enemy;
+                    Console.WriteLine("What would you like to do?");
+                    string fight = Console.ReadLine();
+                    HandleUserInput(fight);
+                    if (CurrentRoom.Enemy.Health > 0)
+                    {
+                        CheckInventory();
+                        Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took a substantial amount of damage!");
+                        CurrentPlayer.Health -= 15;
+                    }
+                }
+                else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
+                {
+                    CheckInventory();
+                    Console.WriteLine($"With the final blow you have defeated the {CurrentRoom.Enemy.Name}");
+                    inBattle = false;
+                    CurrentRoom.Enemy = null;
+                    continue;
+                }
+                else if (CurrentPlayer.Health <= 0 && CurrentRoom.Enemy.Health > 0)
+                {
+                    Console.Clear();
+                    inBattle = false;
+                    GameOver();
                 }
             }
         }
@@ -700,6 +888,8 @@ namespace CastleGrimtol.Project
                     Console.WriteLine("You have used up all of your guesses. The walls continue to collapse on you. You can no longer move. You figure out the answer to the riddle, but it is too late. You have died.");
                     GameOver();
                     inRiddle = false;
+                    return;
+
                 }
             }
         }
@@ -721,6 +911,7 @@ namespace CastleGrimtol.Project
         public void Crown()
         {
             Console.WriteLine("You place the crown upon your head. You feel as though you are being lifted out of your body to ascend. The skyline turns deep red and the ground becomes flames. Only you can control the flames. You are now the ruler of the known world!");
+            GameOver();
         }
 
         public void GameOver()
@@ -740,17 +931,29 @@ namespace CastleGrimtol.Project
                     {
                         CurrentRoom.Exits["s"].IsLocked = false;
                         CurrentPlayer.Inventory.Remove(item);
+                        CurrentRoom.Description = "Room has Door to South that has been unlocked, and Bookshelf to East";
                     }
-                    else if(item.Name == "silverKey")
+                    else if (item.Name == "silverKey")
                     {
                         CurrentRoom.Exits["w"].IsLocked = false;
                         CurrentPlayer.Inventory.Remove(item);
+                        Console.Clear();
+                        CurrentRoom.Description = "Secret entrance to dungeon. The room to your West has been unlocked";
                     }
-                    else if(item.Name == "steelKey")
+                    else if (item.Name == "steelKey")
                     {
                         CurrentRoom.Exits["w"].IsLocked = false;
                         CurrentPlayer.Inventory.Remove(item);
+                        Console.Clear();
                         CurrentRoom.Exits["w"].Description = "A small dimly lit room. Stairs to your west, and door to your right";
+                        CurrentRoom.Description = "A long hallway dimly lit by candles. There are rooms to your East and West. The door to your west has been unlocked. The hallway continues to your North";
+                    }
+                    else if (item.Name == "goldKey")
+                    {
+                        CurrentRoom.Exits["w"].IsLocked = false;
+                        CurrentPlayer.Inventory.Remove(item);
+                        Console.Clear();
+                        CurrentRoom.Description = "There are hundreds of lit candles covering the walls of this hallway. The room to your West has been unlocked. You can hear something through the walls, but you cannot make out what it is. The hallway continues to the South";
                     }
                     else if (item.Name == "book")
                     {
@@ -759,11 +962,14 @@ namespace CastleGrimtol.Project
                             CurrentRoom.Exits["n"].IsLocked = false;
                             CurrentRoom.Items.Add(item);
                             CurrentPlayer.Inventory.Remove(item);
+                            Console.Clear();
                         }
                         else
                         {
                             CurrentRoom.Exits["e"].IsLocked = false;
                             CurrentPlayer.Inventory.Remove(item);
+                            Console.Clear();
+                            CurrentRoom.Description = "There is a room to the South. The bookshelf cracks open revealing a secret room";
                         }
                     }
                     else if (item.Name == "wine")
@@ -786,6 +992,7 @@ namespace CastleGrimtol.Project
                             CurrentRoom.Exits["n"].IsLocked = false;
                             CurrentRoom.Items.Add(item);
                             CurrentPlayer.Inventory.Remove(item);
+                            Console.Clear();
                         }
                     }
                     else if (item.Name == "healthPotion")
@@ -793,16 +1000,19 @@ namespace CastleGrimtol.Project
                         if (CurrentPlayer.Health < 60)
                         {
                             CurrentPlayer.Health += 40;
-                            Console.WriteLine($"You now have {CurrentPlayer.Health} remaining");
+                            Console.Clear();
+                            Console.WriteLine($"You now have {CurrentPlayer.Health} health remaining");
                             CurrentPlayer.Inventory.Remove(item);
                         }
                         else
                         {
+                            Console.Clear();
                             Console.WriteLine($"You currently have {CurrentPlayer.Health}. It would be pointless to use this. You have plenty of health left. Try again when your health is less than 60");
                         }
                     }
                     else if (item.Name == "crownOfFire")
                     {
+                        Console.Clear();
                         Crown();
                     }
                     else if (item.Name == "rustyKnife" || item.Name == "rustyDagger")
