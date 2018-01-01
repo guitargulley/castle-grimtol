@@ -15,19 +15,30 @@ namespace CastleGrimtol.Project
         public List<Item> GameItems { get; set; }
 
 
-        
+
         public void Reset()
         {
-            Console.WriteLine("Play Again? Y/N");
-            string userInput = Console.ReadLine().ToLower();
-            if(userInput == "y")
+            bool inReset = true;
+            while (inReset)
             {
-                Replay = true;
-                InGame = false;
-            }
-            else if(userInput == "n")
-            {
-                InGame = false;
+                Console.WriteLine("Play Again? Y/N");
+                string userInput = Console.ReadLine().ToLower();
+                if (userInput == "y")
+                {
+                    Replay = true;
+                    InGame = false;
+                    inReset = false;
+                }
+                else if (userInput == "n")
+                {
+                    InGame = false;
+                    inReset = false;
+                }
+                else
+                {
+                    Console.WriteLine("I did not understand your response.");
+                    continue;
+                }
             }
         }
 
@@ -46,7 +57,7 @@ namespace CastleGrimtol.Project
 
         public string GetUserInput()
         {
-            Console.Write($"What would you like to do {CurrentPlayer.Name}?: ");
+            Console.Write($"\nWhat would you like to do {CurrentPlayer.Name}?: ");
             return Console.ReadLine();
 
         }
@@ -68,7 +79,7 @@ namespace CastleGrimtol.Project
         {
 
         }
-    
+
         public void Go(string direction)
         {
             // given a string direction...
@@ -227,36 +238,36 @@ namespace CastleGrimtol.Project
 
             Room Room0 = new Room("Room 0", "First floor Main Hallway");
             Room Room0N = new Room("Room 0 N", "The North side of the main hallway");
-            Room Room1 = new Room("Room 1", "You hear the floor creek as you cross the threshold into this room.. SLAM!!! Click!!! You Look behind you and see that the door has shut and locked behind you. You try to open it with no luck.There is no keyhole on the door However. A large Painting appears on the wall to the east.");
-            Room Painting = new Room("Painting", "The Painting grows larger as you move toward it. You see some writing, it appears to be a riddle. \" To Exit you Must Solve this Riddle...\"");
-            Room Room2 = new Room("Room 2", "First floor, Large table with food and drink to the North, staircase leading to second Floor to the West");
-            Room Room2N = new Room("Room 2 North", "First floor, Large table with food and drink. There is Also a large heavy rock lying on the ground.");
-            Room Room3 = new Room("Room 3", "First Floor, Room has large desk with a book sitting on it to the South");
-            Room Room3S = new Room("Room 3 South", "In the middle of the large desk in front of you sits a large heavy book. The book looks important.");
-            Room Room4 = new Room("Room 4", "First Floor, Room has Door to South with a brass padlock on it, and Bookshelf to East");
+            Room Room1 = new Room("Room 1", "You hear the floor creek as you cross the threshold into this room.. \nSLAM!!! Click!!! \nYou Look behind you and see that the door has shut and locked behind you. \nYou try to open it with no luck. However there is no keyhole on the door. \nA large Painting appears on the wall to the east.");
+            Room Painting = new Room("Painting", "The Painting grows larger as you move toward it. \nYou see some writing, it appears to be a riddle. \n\" To Exit you Must Solve this Riddle...\"");
+            Room Room2 = new Room("Room 2", "Large table with food and drink to the North. \nStaircase leading to second Floor to the West");
+            Room Room2N = new Room("Room 2 North", "Large table with food and drink. There is Also a large heavy rock lying on the ground.\nStaircase to the west, and room continues to the South.");
+            Room Room3 = new Room("Room 3", "Room has large desk with a book sitting on it to the South");
+            Room Room3S = new Room("Room 3 South", "In the middle of the large desk in front of you sits a large heavy book. \nThe book looks important.");
+            Room Room4 = new Room("Room 4", "Room has Door to South with a brass padlock on it, and Bookshelf to East");
             Room Room4s = new Room("Room 4s", "Secret room off of room 4, requires book to open bookshelf");
-            Room Room5 = new Room("Room 5", "First Floor, room has a large luxurious rug on the ground spanning the width of the room. to the East is a large desk, you can see a large stack of gold coins sitting on it.");
+            Room Room5 = new Room("Room 5", "Room has a large luxurious rug on the ground spanning the width of the room. \nTo the East is a large desk. \nYou can see a large stack of gold coins sitting on it.");
             Room Room5E = new Room("Room 5E", "TRAP DOOR!");
-            Room StairCase = new Room("Stairs", "Stairs from first floor to second floor");
-            Room StairCase2 = new Room("Stairs", "Stairs from Fisrt Floor to Dungeon");
-            Room Room6 = new Room("Upstairs Hallway", "You reached the second floor, you are in a long narrow hallway. There is no source of light. You stumble through this hallway until you can see light. The hallway continues to your North");
-            Room Room7 = new Room("Upstairs Hallway South", "There are hundreds of lit candles covering the walls of this hallway. there is a room to the West. The hallway continues to the North and South");
-            Room Room7N = new Room("Upstairs Hallway North", "There are hundreds of lit candles covering the walls of this hallway. there is a room to the West with a gold padlock on it. The hallway continues to the South");
+            Room StairCase = new Room("Stairs", "Stairs from First floor to Second floor");
+            Room StairCase2 = new Room("Stairs", "Stairs from Fisrt floor to Dungeon");
+            Room Room6 = new Room("Upstairs Hallway", "You are in a long narrow hallway. There is no source of light. \nYou stumble through this hallway until you can see light. \nThe hallway continues to your North");
+            Room Room7 = new Room("Upstairs Hallway South", "There are hundreds of lit candles covering the walls of this hallway. \nThere is a room to the West. \nThe hallway continues to the North and South");
+            Room Room7N = new Room("Upstairs Hallway North", "There are hundreds of lit candles covering the walls of this hallway. \nthere is a room to the West with a gold padlock on it. \nThe hallway continues to the South");
             Room Room8 = new Room("Upstairs Reading Room", "You enter the room and are instantly attacked by a Skeleton Ranger! You must fight!");
-            Room Room9 = new Room("Upstairs Master Suite", "There is a large Throne sitting in the middle of the room. There is a balcony to the West and the hallway to the East.");
+            Room Room9 = new Room("Upstairs Master Suite", "There is a large Throne sitting in the middle of the room. \nThere is a balcony to the West and the hallway to the East.");
             Room Balcony = new Room("Balcony", "You see the great Crown of Fire sitting on a large table.");
             Room Ladder = new Room("Ladder", "The ladder takes you through a secret passage into the dungeon");
-            Room Room10 = new Room("Dungeon Room 10", "Secret entrance to dungeon. The door to the west is locked by a silver padlock.");
+            Room Room10 = new Room("Dungeon Room 10", "Secret entrance to dungeon. \nThe door to the west is locked by a silver padlock.");
             Room Room10W = new Room("Duneon Room 10 west", "Narrow hallway, exits to the west and east.");
-            Room Room11 = new Room("Dungeon Hallway North", "A long hallway dimly lit by candles. there are rooms to your East and your West. The hallway continues to the south");
-            Room Room12 = new Room("Dungeon Hallway", "A long hallway dimly lit by candles. There are rooms to your East, and West. The hallway continues to your North and South");
-            Room Room13 = new Room("Dungeon Hallway South", "A long hallway dimly lit by candles. There are rooms to your East and West. The door to your west appears to have a steel lock on it. The hallway continues to your North");
-            Room Room14 = new Room("Dungeon Room 14", $"you fall hearing a crunch as you hit the hard cement floor. You have sustained serious injury. You have {CurrentPlayer.Health} remaining. You stand up only to be greeted by a large Troll!");
-            Room Room15 = new Room("Dungeon Cell", "You walk into an old dungeon cell. You are instantly greeted by a Skeleton Warrior!");
-            Room Room16 = new Room("Dungeon Display Room", "You see a large display case with a floating gold key inside of it to the east. There is an exit to your West");
-            Room DisplayCase = new Room("Display Case", "The gold key grows as you approach it. The case is a triangular shape, each side of it has distinct writing on it. They appear to be riddles.");
-            Room Room17 = new Room("Dungeon Stair Entrance", "You enter a small room that is very dimly lit. There is a door to the East, however it is locked with a steel padlock");
-            Room Room18 = new Room("Dungeon Torture Room", "You enter a large room filled with various torture devices. Fragmented bones line the floor. Every step you take within these walls you hear Crunch, Crack, Snap. There is an exit to your East.");
+            Room Room11 = new Room("Dungeon Hallway North", "A long hallway dimly lit by candles. \nThere are rooms to your East and your West. \nThe hallway continues to the south");
+            Room Room12 = new Room("Dungeon Hallway", "A long hallway dimly lit by candles. \nThere are rooms to your East, and West. \nThe hallway continues to your North and South");
+            Room Room13 = new Room("Dungeon Hallway South", "A long hallway dimly lit by candles. \nThere are rooms to your East and West. \nThe door to your west appears to have a steel lock on it. \nThe hallway continues to your North");
+            Room Room14 = new Room("Dungeon Room 14", $"you fall hearing a crunch as you hit the hard cement floor. \nYou have sustained serious injury. You have {CurrentPlayer.Health - 20} health remaining. \nYou stand up only to be greeted by a large Troll!");
+            Room Room15 = new Room("Dungeon Cell", "You walk into an old dungeon cell. \nYou are instantly greeted by a Skeleton Warrior!");
+            Room Room16 = new Room("Dungeon Display Room", "You see a large display case with a floating gold key inside of it to the east. \nThere is an exit to your West");
+            Room DisplayCase = new Room("Display Case", "The gold key grows as you approach it. \nThe case is a triangular shape, each side of it has distinct writing on it. \nThey appear to be riddles.");
+            Room Room17 = new Room("Dungeon Stair Entrance", "You enter a small room that is very dimly lit. \nThere is a door to the East, however it is locked with a steel padlock");
+            Room Room18 = new Room("Dungeon Torture Room", "You enter a large room filled with various torture devices. \nFragmented bones line the floor. \nEvery step you take within these walls you hear Crunch, Crack, Snap. \nThere is an exit to your East.");
 
             List<Room> GameRooms = new List<Room>();
             CurrentRoom = Room0;
@@ -485,18 +496,21 @@ namespace CastleGrimtol.Project
                 if (selection == "1")
                 {
                     CurrentPlayer.Inventory.Add(rustyDagger);
+                    Console.Clear();
                     Console.WriteLine($"A {rustyDagger.Name} has been added to your inventory");
                     noInventory = false;
                 }
                 else if (selection == "2")
                 {
                     CurrentPlayer.Inventory.Add(rustyKnife);
+                    Console.Clear();
                     Console.WriteLine($"A {rustyKnife.Name} has been added to your inventory");
                     noInventory = false;
                 }
                 else if (selection == "3")
                 {
                     CurrentPlayer.Inventory.Add(healthPotion);
+                    Console.Clear();
                     Console.WriteLine($"A {healthPotion.Name} has been added to your inventory");
                     noInventory = false;
                 }
@@ -721,6 +735,7 @@ namespace CastleGrimtol.Project
         public void SkeletonFight()
         {
             CheckInventory();
+            Console.WriteLine(CurrentRoom.Description);
             Console.WriteLine($"The {CurrentRoom.Enemy.Name} takes a swing at you but misses!");
             CurrentEnemy = CurrentRoom.Enemy;
             bool inBattle = true;
@@ -772,7 +787,7 @@ namespace CastleGrimtol.Project
                 Console.WriteLine($@"
     {CurrentRoom.Enemy.Name} - {CurrentRoom.Enemy.Health} : {CurrentPlayer.Name} - {CurrentPlayer.Health}
                 ");
-                
+
                 if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health > 0)
                 {
                     Console.WriteLine("What would you like to do?");
@@ -851,11 +866,16 @@ namespace CastleGrimtol.Project
             {
                 if (guess < 3)
                 {
-                    Console.WriteLine("Mountains will crumble and temples will fall, and no man can survive its endless call. What is it?");
+                    Console.WriteLine($@"
+                    Mountains will crumble and temples will fall, 
+                    And no man can survive its endless call.
+                                What is it?
+                                ");
                     Console.WriteLine($"You have {3 - guess} guesses remaining.");
                     string response = Console.ReadLine().ToLower();
                     if (response == answer)
                     {
+                        Console.Clear();
                         Console.WriteLine("You have proven your wisdom. You may continue on your quest.");
                         inRiddle = false;
                         CurrentRoom.Exits["w"].Visited = true;
@@ -885,6 +905,7 @@ namespace CastleGrimtol.Project
                 }
                 else
                 {
+                    Console.Clear();
                     Console.WriteLine("You have used up all of your guesses. The walls continue to collapse on you. You can no longer move. You figure out the answer to the riddle, but it is too late. You have died.");
                     GameOver();
                     inRiddle = false;
@@ -916,7 +937,11 @@ namespace CastleGrimtol.Project
 
         public void GameOver()
         {
-            Console.WriteLine("GAME OVER");
+            Console.WriteLine($@"
+                            -------------
+                            | GAME OVER |
+                            -------------
+            ");
             Reset();
         }
 

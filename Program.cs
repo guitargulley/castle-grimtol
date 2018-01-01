@@ -21,7 +21,10 @@ namespace CastleGrimtol
                         game.HandleUserInput("q");
 
                     }
-                    Console.WriteLine(game.CurrentRoom.Description);
+                    Console.WriteLine($@"
+ {game.CurrentRoom.Description}
+                    ");
+                    game.GetRoomItems(game.CurrentRoom);
                     var userInput = game.GetUserInput().ToLower();
 
                     game.HandleUserInput(userInput);
