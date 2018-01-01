@@ -21,6 +21,7 @@ namespace CastleGrimtol.Project
             bool inReset = true;
             while (inReset)
             {
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Play Again? Y/N");
                 string userInput = Console.ReadLine().ToLower();
                 if (userInput == "y")
@@ -78,7 +79,7 @@ namespace CastleGrimtol.Project
         public void Look()
         {
             Console.Clear();
-            Console.WriteLine(CurrentRoom.Description);
+
         }
 
         public void Go(string direction)
@@ -621,6 +622,9 @@ help - shows commands available.
             {
                 if (!riddle1)
                 {
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Black;
                     if (guess < 3)
                     {
                         Console.Clear();
@@ -630,6 +634,11 @@ help - shows commands available.
                         Console.WriteLine($"You have {3 - guess} guesses remaining");
                         Console.Write("What is your guess?:");
                         input = Console.ReadLine().ToLower();
+                        if (input == "q")
+                        {
+                            GameOver();
+                            return;
+                        }
                         if (input == "alphabet" || input == "the alphabet")
                         {
                             Console.WriteLine("You have passed the first test of three, you have 2 riddles remaining to retrieve your prize.");
@@ -658,6 +667,9 @@ help - shows commands available.
                 }
                 else if (riddle1 == true && riddle2 == false)
                 {
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Black;
                     if (guess < 3)
                     {
                         Console.Clear();
@@ -667,9 +679,14 @@ help - shows commands available.
                         Console.WriteLine($"You have {3 - guess} guesses remaining");
                         Console.Write("What is your guess?:");
                         input = Console.ReadLine().ToLower();
+                        if (input == "q")
+                        {
+                            GameOver();
+                            return;
+                        }
                         if (input == "mirror" || input == "a mirror")
                         {
-                            Console.WriteLine("You have passed the first test of three, you have 2 riddles remaining to retrieve your prize.");
+                            Console.WriteLine("You have passed the second test of three, you have 1 riddle remaining to retrieve your prize.");
                             riddle2 = true;
                             guess = 0;
                         }
@@ -695,6 +712,9 @@ help - shows commands available.
                 }
                 else if (riddle1 == true && riddle2 == true && riddle3 == false)
                 {
+                    Console.BackgroundColor = ConsoleColor.DarkRed;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.White;
                     if (guess < 3)
                     {
                         Console.Clear();
@@ -704,13 +724,21 @@ help - shows commands available.
                         Console.WriteLine($"You have {3 - guess} guesses remaining");
                         Console.Write("What is your guess?:");
                         input = Console.ReadLine().ToLower();
+                        if (input == "q")
+                        {
+                            GameOver();
+                            return;
+                        }
                         if (input == "echo" || input == "an echo")
                         {
-                            Console.WriteLine("You have passed the first test of three, you have 2 riddles remaining to retrieve your prize.");
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.WriteLine("You have passed all 3 tests! You may claim your prize.");
                             riddle3 = true;
                             guess = 0;
                             inRiddles = false;
-                            CurrentRoom.Description = "There is a large pillar in the middle of the room. There is an exit to your West";
+                            CurrentRoom.Description = "There is a large pillar in the middle of the room.\n There is an exit to your West";
                             CurrentRoom.Exits["w"].Description = "There is an exit to your West, and an empty room to your East";
                         }
                         else if (input != "echo" || input != "an echo")
@@ -735,11 +763,15 @@ help - shows commands available.
                 }
             }
             Console.Clear();
-            Console.WriteLine("The display case glass walls retract into a large stone pillar. The key is now able to be picked up.");
+            Console.WriteLine("The display case glass walls retract into a large stone pillar.\n The key is now able to be picked up.");
         }
 
         public void SkeletonFight()
         {
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Clear();
             CheckInventory();
             Console.WriteLine(CurrentRoom.Description);
             Console.WriteLine($"The {CurrentRoom.Enemy.Name} takes a swing at you but misses!");
@@ -754,7 +786,12 @@ help - shows commands available.
                 if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health > 0)
                 {
                     Console.WriteLine("What would you like to do?");
-                    string fight = Console.ReadLine();
+                    string fight = Console.ReadLine().ToLower();
+                    if (fight == "q")
+                        {
+                            GameOver();
+                            return;
+                        }
                     HandleUserInput(fight);
                     if (CurrentRoom.Enemy.Health > 0)
                     {
@@ -765,6 +802,9 @@ help - shows commands available.
                 }
                 else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
                 {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Black;
                     CheckInventory();
                     Console.WriteLine($"With the final blow you have defeated the {CurrentRoom.Enemy.Name}");
                     inBattle = false;
@@ -782,6 +822,10 @@ help - shows commands available.
 
         public void BossFight()
         {
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Clear();
             CheckInventory();
             Console.WriteLine($"The {CurrentRoom.Enemy.Name} takes a swing at you, the sword makes contact with you!");
             CurrentPlayer.Health -= 5;
@@ -797,7 +841,12 @@ help - shows commands available.
                 if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health > 0)
                 {
                     Console.WriteLine("What would you like to do?");
-                    string fight = Console.ReadLine();
+                    string fight = Console.ReadLine().ToLower();
+                    if (fight == "q")
+                        {
+                            GameOver();
+                            return;
+                        }
                     HandleUserInput(fight);
                     if (CurrentRoom.Enemy.Health > 0)
                     {
@@ -808,6 +857,9 @@ help - shows commands available.
                 }
                 else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
                 {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Black;
                     CheckInventory();
                     Console.WriteLine($"With the final blow you have defeated the {CurrentRoom.Enemy.Name}");
                     inBattle = false;
@@ -839,22 +891,38 @@ help - shows commands available.
 
         public void RemoveBook(Item item)
         {
-            Console.WriteLine("you got here");
+
             CurrentRoom.Exits["n"].IsLocked = true;
-            Console.WriteLine("You made it to remove room");
+
             CurrentRoom.Description = $"As you lift the {item.Name} up, a large steel gate drops behind you!. You are trapped in this small room!. On the desk you notice that there is a small pressure plate where the book was sitting. The door is controlled by this plate.";
             while (CurrentRoom.Exits["n"].IsLocked)
             {
+                Console.BackgroundColor = ConsoleColor.DarkRed;
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(CurrentRoom.Description);
                 string nextMove = GetUserInput();
+                if (nextMove == "q")
+                {
+                    GameOver();
+                    return;
+                }
                 HandleUserInput(nextMove);
                 for (int i = 0; i < CurrentRoom.Items.Count; i++)
                 {
                     Item cItem = CurrentRoom.Items[i];
                     if (cItem.Name == "book" || cItem.Name == "rock")
                     {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Black;
                         CurrentRoom.Exits["n"].IsLocked = false;
                         CurrentRoom.Description = "The gate slowly lifts up. you can now move around freely. exit to the North";
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("You cannot use this command.");
                         continue;
                     }
                 }
@@ -867,6 +935,9 @@ help - shows commands available.
             bool inRiddle = true;
             string answer = "time";
             Console.Clear();
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Black;
             Console.WriteLine(CurrentRoom.Description);
             while (inRiddle)
             {
@@ -879,8 +950,16 @@ help - shows commands available.
                                 ");
                     Console.WriteLine($"You have {3 - guess} guesses remaining.");
                     string response = Console.ReadLine().ToLower();
+                    if (response == "q")
+                        {
+                            GameOver();
+                            return;
+                        }
                     if (response == answer)
                     {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Black;
                         Console.Clear();
                         Console.WriteLine("You have proven your wisdom. You may continue on your quest.");
                         inRiddle = false;
@@ -943,6 +1022,10 @@ help - shows commands available.
 
         public void GameOver()
         {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Clear();
             Console.WriteLine($@"
                             -------------
                             | GAME OVER |

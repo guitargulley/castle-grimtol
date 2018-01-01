@@ -7,6 +7,8 @@ namespace CastleGrimtol
     {
         public static void Main(string[] args)
         {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
             bool Playing = true;
             while (Playing)
             {
@@ -32,16 +34,27 @@ namespace CastleGrimtol
                     if (userInput == "q")
                     {
                         game.InGame = false;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Clear();
                         continue;
                     }
                 }
                 if (game.Replay)
                 {
                     Playing = true;
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Black;
                     Console.Clear();
                 }
                 else
                 {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Clear();
                     Playing = false;
                 }
             }
