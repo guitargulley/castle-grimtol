@@ -77,7 +77,8 @@ namespace CastleGrimtol.Project
         }
         public void Look()
         {
-
+            Console.Clear();
+            Console.WriteLine(CurrentRoom.Description);
         }
 
         public void Go(string direction)
@@ -188,13 +189,22 @@ namespace CastleGrimtol.Project
                 }
             }
         }
-        public void DropItem(string userInput)
-        {
-
-        }
         public void Help()
         {
-
+            Console.Clear();
+            Console.WriteLine($@"
+Commands that can be used.
+============================================================
+look - displays current room.
+inventory - displays the list of items you have.
+go - accepts the following... w , e, s, n, 
+     (up and down when using stairs or ladders).
+take - adds items found in rooms to your inventory.
+use - uses the items in your inventory for various actions.
+q - exit the game.
+help - shows commands available.
+============================================================
+            ");
         }
 
         public void Setup()
@@ -549,10 +559,6 @@ namespace CastleGrimtol.Project
                 else if (command == "take" && option != null)
                 {
                     TakeItem(option);
-                }
-                else if (command == "drop" && option != null)
-                {
-                    DropItem(option);
                 }
                 else if (command == "use" && option != null)
                 {
