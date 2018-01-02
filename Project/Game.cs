@@ -101,6 +101,10 @@ namespace CastleGrimtol.Project
                     {
                         if (!CurrentRoom.Visited)
                         {
+                            Console.BackgroundColor = ConsoleColor.DarkRed;
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Look();
                             CurrentRoom.Exits["w"].IsLocked = true;
                             CurrentRoom.Visited = true;
                         }
@@ -110,6 +114,13 @@ namespace CastleGrimtol.Project
                         if (!CurrentRoom.Visited)
                         {
                             PaintingRiddle();
+                        }
+                    }
+                    else if (CurrentRoom.Name == "Room 2 North")
+                    {
+                        if(CurrentRoom.Items.Count == 0)
+                        {
+                            CurrentRoom.Description = "Large table sits in the middle of the room\nStaircase going to dungeon to the west, and room continues to the South.";
                         }
                     }
                     else if (CurrentRoom.Name == "Room 3 South")
@@ -154,7 +165,7 @@ namespace CastleGrimtol.Project
                             DisplayCase();
                         }
                     }
-                    else if (CurrentRoom.Name == "Upstairs Master Suite")
+                    else if (CurrentRoom.Name == "Upstairs Master Suite" && CurrentRoom.Enemy != null)
                     {
                         Console.WriteLine("");
                         BossFight();
@@ -182,6 +193,7 @@ namespace CastleGrimtol.Project
                         Console.WriteLine($"{item.Name} has been added to your inventory");
                         CurrentRoom.Items.Remove(item);
                         RemoveBook(item);
+                        return;
                     }
                     else if (option == "rock" && CurrentRoom.Name == "Room 3 South")
                     {
@@ -190,6 +202,7 @@ namespace CastleGrimtol.Project
                         Console.WriteLine($"{item.Name} has been added to your inventory");
                         CurrentRoom.Items.Remove(item);
                         RemoveBook(item);
+                        return;
                     }
                     else
                     {
@@ -197,6 +210,7 @@ namespace CastleGrimtol.Project
                         Console.Clear();
                         Console.WriteLine($"{item.Name} has been added to your inventory");
                         CurrentRoom.Items.Remove(item);
+                        return;
                     }
                 }
                 else
@@ -274,7 +288,7 @@ help - shows commands available.
             Room Room1 = new Room("Room 1", "You hear the floor creek as you cross the threshold into this room.. \nSLAM!!! Click!!! \nYou Look behind you and see that the door has shut and locked behind you. \nYou try to open it with no luck. However there is no keyhole on the door. \nA large Painting appears on the wall to the east.");
             Room Painting = new Room("Painting", "The Painting grows larger as you move toward it. \nYou see some writing, it appears to be a riddle. \n\" To Exit you Must Solve this Riddle...\"");
             Room Room2 = new Room("Room 2", "Large table with items to the North. \nStaircase leading to second Floor to the West.\nMain hallway to the East");
-            Room Room2N = new Room("Room 2 North", "Large table with items.\n There is Also a large heavy rock lying on the ground.\nStaircase to the west, and room continues to the South.");
+            Room Room2N = new Room("Room 2 North", "Large table with items.\nStaircase to the west, and room continues to the South.");
             Room Room3 = new Room("Room 3", "Room has large desk with a book sitting on it to the South");
             Room Room3S = new Room("Room 3 South", "In the middle of the large desk in front of you sits a large heavy book. \nThe book looks important.");
             Room Room4 = new Room("Room 4", "Room has Door to South with a brass padlock on it, and Bookshelf to East");
@@ -522,7 +536,7 @@ help - shows commands available.
             You may choose:
             1: rusty dagger,
             2: rusty knife,
-            What Say You?
+            What Say You?(Enter the number associated with selection)
             ");
                 var selection = Console.ReadLine();
                 if (selection == "1")
@@ -681,6 +695,7 @@ help - shows commands available.
                             }
                             else
                             {
+                                Console.Clear();
                                 Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
                                 Console.WriteLine("Press Enter to Continue");
                                 Console.ReadLine();
@@ -689,6 +704,7 @@ help - shows commands available.
                     }
                     else
                     {
+                        Console.Clear();
                         Console.WriteLine("The room has completely filled up with the toxic gas. You no longer can breathe. You have been poisoned and die.");
                         Console.WriteLine("Press Enter to Continue");
                         Console.ReadLine();
@@ -732,14 +748,16 @@ help - shows commands available.
                             }
                             else
                             {
+                                Console.Clear();
+                                Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
                                 Console.WriteLine("Press Enter to Continue");
                                 Console.ReadLine();
-                                Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
                             }
                         }
                     }
                     else
                     {
+                        Console.Clear();
                         Console.WriteLine("The room has completely filled up with the toxic gas. You no longer can breathe. You have been poisoned and die.");
                         GameOver();
                     }
@@ -785,14 +803,16 @@ help - shows commands available.
                             }
                             else
                             {
+                                Console.Clear();
+                                Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
                                 Console.WriteLine("Press Enter to Continue");
                                 Console.ReadLine();
-                                Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
                             }
                         }
                     }
                     else
                     {
+                        Console.Clear();
                         Console.WriteLine("The room has completely filled up with the toxic gas. You no longer can breathe. You have been poisoned and die.");
                         GameOver();
                     }
@@ -804,6 +824,8 @@ help - shows commands available.
 
         public void SkeletonFight()
         {
+            Random random = new Random();
+            int randHit = random.Next(4, 16);
             Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.White;
@@ -832,8 +854,10 @@ help - shows commands available.
                     if (CurrentRoom.Enemy.Health > 0)
                     {
                         CheckInventory();
-                        Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took a substantial amount of damage!");
-                        CurrentPlayer.Health -= 8;
+                        CurrentPlayer.Health -= randHit;
+                        Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took {randHit} of damage!");
+                        Console.WriteLine("press enter to continue");
+                        Console.ReadLine();
                     }
                 }
                 else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
@@ -845,12 +869,16 @@ help - shows commands available.
                     Console.WriteLine($"With the final blow you have defeated the {CurrentRoom.Enemy.Name}");
                     inBattle = false;
                     CurrentRoom.Enemy = null;
+                    Look();
                     continue;
                 }
                 else if (CurrentPlayer.Health <= 0 && CurrentRoom.Enemy.Health > 0)
                 {
                     Console.Clear();
                     inBattle = false;
+                    Console.WriteLine($"You have fallen to your knees, your health fading fast\nThe {CurrentRoom.Enemy.Name} takes one final swing. \n The blade slices cleanly through your neck taking your head off.");
+                    Console.WriteLine("press enter to continue");
+                    Console.ReadLine();
                     GameOver();
                 }
             }
@@ -858,6 +886,8 @@ help - shows commands available.
 
         public void BossFight()
         {
+            Random random = new Random();
+            int randHit = random.Next(10, 21);
             Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.White;
@@ -887,8 +917,10 @@ help - shows commands available.
                     if (CurrentRoom.Enemy.Health > 0)
                     {
                         CheckInventory();
-                        Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took a substantial amount of damage!");
-                        CurrentPlayer.Health -= 15;
+                        CurrentPlayer.Health -= randHit;
+                        Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took {randHit} of damage!");
+                        Console.WriteLine("press enter to continue");
+                        Console.ReadLine();
                     }
                 }
                 else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
@@ -900,15 +932,19 @@ help - shows commands available.
                     Console.WriteLine($"With the final blow you have defeated the {CurrentRoom.Enemy.Name}");
                     inBattle = false;
                     CurrentRoom.Enemy = null;
-                    continue;
+                    return;
                 }
                 else if (CurrentPlayer.Health <= 0 && CurrentRoom.Enemy.Health > 0)
                 {
                     Console.Clear();
                     inBattle = false;
+                    Console.WriteLine($"You have fallen to your knees. Body broken and bloody\n The {CurrentRoom.Enemy.Name} thrusts its hand inside your chest\nGrasping your heart in its hand, the {CurrentRoom.Enemy.Name} quickly pulls back.\nThe {CurrentRoom.Enemy.Name} replaces its black withering heart with yours.\nYou die while watching {CurrentRoom.Enemy.Name} return back to a living being.");
+                    Console.WriteLine("press enter to continue");
+                    Console.ReadLine();
                     GameOver();
                 }
             }
+
         }
 
         public void Intoxicated()
@@ -939,7 +975,11 @@ help - shows commands available.
                         Console.Clear();
                         CurrentPlayer.Health -= 5;
                         Health();
-                        Console.WriteLine("As you start to move, you stumble and fall.\n You have taken a loss of 5 to your health");
+                        Console.WriteLine($@"
+                        ------------------------------------------
+                        As you start to move, you stumble and fall.
+                        You have taken a loss of 5 to your health
+                        ------------------------------------------");
                         Console.WriteLine(CurrentRoom.Description);
                         continue;
                     }
@@ -966,7 +1006,7 @@ help - shows commands available.
                 }
                 if (count == 3)
                 {
-                    Console.BackgroundColor = ConsoleColor.DarkMagenta;
+                    Console.BackgroundColor = ConsoleColor.White;
                     Console.Clear();
                     intoxicated = false;
                     Health();
@@ -1142,6 +1182,7 @@ help - shows commands available.
 
         public void UseItem(Item item)
         {
+            Random random = new Random();
             for (int i = 0; i < CurrentRoom.UsableItems.Count; i++)
             {
                 Item usable = CurrentRoom.UsableItems[i];
@@ -1227,15 +1268,28 @@ help - shows commands available.
                     {
                         if (CurrentPlayer.Health < 60)
                         {
-                            CurrentPlayer.Health += 40;
-                            Console.Clear();
-                            Console.WriteLine($"You now have {CurrentPlayer.Health} health remaining");
-                            CurrentPlayer.Inventory.Remove(item);
+                            if (CurrentRoom.Name != "Upstairs Master Suite")
+                            {
+                                CurrentPlayer.Health += 40;
+                                Console.Clear();
+                                Console.WriteLine($"You now have {CurrentPlayer.Health} health remaining");
+                                CurrentPlayer.Inventory.Remove(item);
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                Console.WriteLine("The Health Potion tastes a lot like water. This has no effect on your health.");
+                                CurrentPlayer.Inventory.Remove(item);
+                                Console.WriteLine("press enter to continue");
+                                Console.ReadLine();
+                            }
                         }
                         else
                         {
                             Console.Clear();
                             Console.WriteLine($"You currently have {CurrentPlayer.Health}. It would be pointless to use this. You have plenty of health left. Try again when your health is less than 60");
+                            Console.WriteLine("press enter to continue");
+                            Console.ReadLine();
                         }
                     }
                     else if (item.Name == "crownOfFire")
@@ -1247,10 +1301,13 @@ help - shows commands available.
                     {
                         if (CurrentEnemy.Name == "Skeleton Warrior" || CurrentEnemy.Name == "Skeleton Ranger")
                         {
+                            int randHit = random.Next(15, 21);
                             if (CurrentEnemy.Health > 0)
                             {
-                                CurrentEnemy.Health -= 20;
-                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                CurrentEnemy.Health -= randHit;
+                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished by {randHit}. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                Console.WriteLine("press enter to continue");
+                                Console.ReadLine();
                             }
                             else
                             {
@@ -1259,10 +1316,13 @@ help - shows commands available.
                         }
                         else if (CurrentEnemy.Name == "Troll")
                         {
+                            int randHit = random.Next(10, 18);
                             if (CurrentEnemy.Health > 0)
                             {
-                                CurrentEnemy.Health -= 15;
-                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                CurrentEnemy.Health -= randHit;
+                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished by {randHit}. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                Console.WriteLine("press enter to continue");
+                                Console.ReadLine();
                             }
                             else
                             {
@@ -1271,10 +1331,13 @@ help - shows commands available.
                         }
                         else if (CurrentEnemy.Name == "Undead King")
                         {
+                            int randHit = random.Next(5, 16);
                             if (CurrentEnemy.Health > 0)
                             {
-                                CurrentEnemy.Health -= 10;
-                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                CurrentEnemy.Health -= randHit;
+                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished by {randHit}. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                Console.WriteLine("press enter to continue");
+                                Console.ReadLine();
                             }
                             else
                             {
@@ -1286,10 +1349,13 @@ help - shows commands available.
                     {
                         if (CurrentEnemy.Name == "Skeleton Warrior" || CurrentEnemy.Name == "Skeleton Ranger")
                         {
+                            int randHit = random.Next(25, 51);
                             if (CurrentEnemy.Health > 0)
                             {
-                                CurrentEnemy.Health -= 50;
-                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                CurrentEnemy.Health -= randHit;
+                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished by {randHit}. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                Console.WriteLine("press enter to continue");
+                                Console.ReadLine();
                             }
                             else
                             {
@@ -1298,10 +1364,13 @@ help - shows commands available.
                         }
                         else if (CurrentEnemy.Name == "Troll")
                         {
+                            int randHit = random.Next(20, 36);
                             if (CurrentEnemy.Health > 0)
                             {
-                                CurrentEnemy.Health -= 34;
-                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                CurrentEnemy.Health -= randHit;
+                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished by {randHit}. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                Console.WriteLine("press enter to continue");
+                                Console.ReadLine();
                             }
                             else
                             {
@@ -1310,10 +1379,13 @@ help - shows commands available.
                         }
                         else if (CurrentEnemy.Name == "Undead King")
                         {
+                            int randHit = random.Next(10, 26);
                             if (CurrentEnemy.Health > 0)
                             {
-                                CurrentEnemy.Health -= 20;
-                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                CurrentEnemy.Health -= randHit;
+                                Console.WriteLine($"You struck the {CurrentEnemy.Name} with {item.Name}. Its health has been diminished by {randHit}. The {CurrentEnemy.Name} has {CurrentEnemy.Health} remaining");
+                                Console.WriteLine("press enter to continue");
+                                Console.ReadLine();
                             }
                             else
                             {
