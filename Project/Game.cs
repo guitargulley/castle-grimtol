@@ -70,11 +70,15 @@ namespace CastleGrimtol.Project
         public void CheckInventory()
         {
             Console.Clear();
+            Console.WriteLine($"=====================");
+            Console.WriteLine("INVENTORY");
+            Console.WriteLine($"---------------------");
             for (int i = 0; i < CurrentPlayer.Inventory.Count; i++)
             {
                 Item item = CurrentPlayer.Inventory[i];
-                Console.WriteLine(item.Name);
+                Console.WriteLine($"{item.Name}");
             }
+            Console.WriteLine($"=====================");
         }
         public void Look()
         {
@@ -126,6 +130,18 @@ namespace CastleGrimtol.Project
                     {
                         TrapDoor();
                     }
+                    else if (CurrentRoom.Name == "Dungeon Room 14" && PrevRoom.Name == "Dungeon Hallway")
+                    {
+                        if (CurrentRoom.Enemy == null)
+                        {
+                            CurrentRoom.Description = "The room around you is as black as night, but you can see some light shining from under the door to your West.";
+                        }
+                        else
+                        {
+                            CurrentRoom.Description = "You Enter the room and are instantly greeted by a Large Troll!";
+                            SkeletonFight();
+                        }
+                    }
                     else if (CurrentRoom.Name == "Room 4s")
                     {
                         SecretRoom();
@@ -148,7 +164,7 @@ namespace CastleGrimtol.Project
                 {
                     Console.Clear();
                     Console.WriteLine("This Room Appears to be locked. Use the appropriate key to unlock this door.");
-                    Look();
+
                 }
             }
         }
@@ -190,6 +206,11 @@ namespace CastleGrimtol.Project
                 }
             }
         }
+        public void Health()
+        {
+            Console.Clear();
+            Console.WriteLine($"{CurrentPlayer.Name} - {CurrentPlayer.Health}");
+        }
         public void Help()
         {
             Console.Clear();
@@ -198,6 +219,7 @@ Commands that can be used.
 ============================================================
 look - displays current room.
 inventory - displays the list of items you have.
+health - displays current player health.
 go - accepts the following... w , e, s, n, 
      (up and down when using stairs or ladders).
 take - adds items found in rooms to your inventory.
@@ -247,12 +269,12 @@ help - shows commands available.
             GameItems.Add(food);
             GameItems.Add(crown);
 
-            Room Room0 = new Room("Room 0", "First floor Main Hallway");
-            Room Room0N = new Room("Room 0 N", "The North side of the main hallway");
+            Room Room0 = new Room("Room 0", "First floor Main Hallway\n There are doors to your East and West.\n Hallway continues to the North");
+            Room Room0N = new Room("Room 0 N", "The North side of the main hallway.\nThere are doors to your East and West.\n Hallway continues to the South");
             Room Room1 = new Room("Room 1", "You hear the floor creek as you cross the threshold into this room.. \nSLAM!!! Click!!! \nYou Look behind you and see that the door has shut and locked behind you. \nYou try to open it with no luck. However there is no keyhole on the door. \nA large Painting appears on the wall to the east.");
             Room Painting = new Room("Painting", "The Painting grows larger as you move toward it. \nYou see some writing, it appears to be a riddle. \n\" To Exit you Must Solve this Riddle...\"");
-            Room Room2 = new Room("Room 2", "Large table with food and drink to the North. \nStaircase leading to second Floor to the West");
-            Room Room2N = new Room("Room 2 North", "Large table with food and drink. There is Also a large heavy rock lying on the ground.\nStaircase to the west, and room continues to the South.");
+            Room Room2 = new Room("Room 2", "Large table with items to the North. \nStaircase leading to second Floor to the West.\nMain hallway to the East");
+            Room Room2N = new Room("Room 2 North", "Large table with items.\n There is Also a large heavy rock lying on the ground.\nStaircase to the west, and room continues to the South.");
             Room Room3 = new Room("Room 3", "Room has large desk with a book sitting on it to the South");
             Room Room3S = new Room("Room 3 South", "In the middle of the large desk in front of you sits a large heavy book. \nThe book looks important.");
             Room Room4 = new Room("Room 4", "Room has Door to South with a brass padlock on it, and Bookshelf to East");
@@ -584,12 +606,18 @@ help - shows commands available.
 
         public void SecretRoom()
         {
-            while (CurrentRoom.Items.Count != 0)
+            while (CurrentRoom.Items.Count != 0 && CurrentRoom.Name == "Room 4s")
             {
                 CurrentRoom.Description = "As the bookshelf swing open, a large golden chest is revealed. You can exit the room to your West";
                 Console.WriteLine(CurrentRoom.Description);
                 GetRoomItems(CurrentRoom);
                 string next = GetUserInput();
+                if (next == "go w")
+                {
+                    CurrentRoom = CurrentRoom.Exits["w"];
+                    Console.Clear();
+                    return;
+                }
                 HandleUserInput(next);
             }
             if (CurrentRoom.Items.Count == 0)
@@ -600,6 +628,7 @@ help - shows commands available.
                 string next = GetUserInput();
                 HandleUserInput(next);
             }
+            return;
         }
 
         public void DisplayCase()
@@ -788,10 +817,10 @@ help - shows commands available.
                     Console.WriteLine("What would you like to do?");
                     string fight = Console.ReadLine().ToLower();
                     if (fight == "q")
-                        {
-                            GameOver();
-                            return;
-                        }
+                    {
+                        GameOver();
+                        return;
+                    }
                     HandleUserInput(fight);
                     if (CurrentRoom.Enemy.Health > 0)
                     {
@@ -843,10 +872,10 @@ help - shows commands available.
                     Console.WriteLine("What would you like to do?");
                     string fight = Console.ReadLine().ToLower();
                     if (fight == "q")
-                        {
-                            GameOver();
-                            return;
-                        }
+                    {
+                        GameOver();
+                        return;
+                    }
                     HandleUserInput(fight);
                     if (CurrentRoom.Enemy.Health > 0)
                     {
@@ -877,7 +906,64 @@ help - shows commands available.
 
         public void Intoxicated()
         {
-
+            Console.Clear();
+            Console.WriteLine(CurrentRoom.Description);
+            Console.WriteLine("With the bottle of wine empty,\nyou have become drunk and can barely walk.");
+            bool intoxicated = true;
+            int count = 0;
+            while (intoxicated)
+            {
+                if (count < 3)
+                {
+                    string movement = GetUserInput();
+                    if (movement == "use food")
+                    {
+                        Console.Clear();
+                        Console.WriteLine("The food helped with making you sober.");
+                        intoxicated = false;
+                        continue;
+                    }
+                    else if (movement == "go w" || movement == "go e" || movement == "go n" || movement == "go s" || movement == "go up" || movement == "go down")
+                    {
+                        count++;
+                        Console.Clear();
+                        CurrentPlayer.Health -= 5;
+                        Health();
+                        Console.WriteLine("As you start to move, you stumble and fall.\n You have taken a loss of 5 to your health");
+                        Console.WriteLine(CurrentRoom.Description);
+                        continue;
+                    }
+                    else if (movement == "look")
+                    {
+                        Look();
+                    }
+                    else if (movement == "inventory")
+                    {
+                        Console.Clear();
+                        CheckInventory();
+                        Console.WriteLine(CurrentRoom.Description);
+                    }
+                    else if (movement == "help")
+                    {
+                        Help();
+                        Console.WriteLine(CurrentRoom.Description);
+                    }
+                    else if (movement == "q")
+                    {
+                        GameOver();
+                        return;
+                    }
+                }
+                if (count == 3)
+                {
+                    Console.Clear();
+                    intoxicated = false;
+                    Health();
+                    Console.WriteLine("The effects of the wine has worn off.");
+                    continue;
+                }
+            }
+            return;
         }
 
         public void BookRoom()
@@ -900,6 +986,7 @@ help - shows commands available.
                 Console.BackgroundColor = ConsoleColor.DarkRed;
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.White;
+                CheckInventory();
                 Console.WriteLine(CurrentRoom.Description);
                 string nextMove = GetUserInput();
                 if (nextMove == "q")
@@ -951,10 +1038,10 @@ help - shows commands available.
                     Console.WriteLine($"You have {3 - guess} guesses remaining.");
                     string response = Console.ReadLine().ToLower();
                     if (response == "q")
-                        {
-                            GameOver();
-                            return;
-                        }
+                    {
+                        GameOver();
+                        return;
+                    }
                     if (response == answer)
                     {
                         Console.BackgroundColor = ConsoleColor.White;
@@ -1060,7 +1147,7 @@ help - shows commands available.
                         CurrentPlayer.Inventory.Remove(item);
                         Console.Clear();
                         CurrentRoom.Exits["w"].Description = "A small dimly lit room. Stairs to your west, and door to your right";
-                        CurrentRoom.Description = "A long hallway dimly lit by candles. There are rooms to your East and West. The door to your west has been unlocked. The hallway continues to your North";
+                        CurrentRoom.Description = "A long hallway dimly lit by candles. \nThere are rooms to your East and West.\n The door to your west has been unlocked.\n The hallway continues to your North";
                     }
                     else if (item.Name == "goldKey")
                     {
@@ -1083,7 +1170,15 @@ help - shows commands available.
                             CurrentRoom.Exits["e"].IsLocked = false;
                             CurrentPlayer.Inventory.Remove(item);
                             Console.Clear();
-                            CurrentRoom.Description = "There is a room to the South. The bookshelf cracks open revealing a secret room";
+                            if (CurrentRoom.Exits["s"].IsLocked)
+                            {
+                                CurrentRoom.Description = "There is a room to the South with a brass padlock on it. \nThe bookshelf cracks open revealing a secret room";
+                            }
+                            else
+                            {
+                                CurrentRoom.Description = "There is a room to the South. \nThe bookshelf cracks open revealing a secret room";
+
+                            }
                         }
                     }
                     else if (item.Name == "wine")
