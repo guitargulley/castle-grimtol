@@ -514,15 +514,14 @@ help - shows commands available.
             while (noInventory)
             {
                 Console.WriteLine($@"
-            Welcome {CurrentPlayer.Name} to the castle of .
-            I assume you are here to claim the Crown of Fire. 
+            Welcome {CurrentPlayer.Name} to the Castle of Eternal Flame.
+            You have come to claim the Crown of Fire. 
             I must warn you. Many have come, and none have survived. 
             Caution will be your ally in this quest.
             To start you off, I shall supply you with one item. 
             You may choose:
             1: rusty dagger,
             2: rusty knife,
-            3: health potion
             What Say You?
             ");
                 var selection = Console.ReadLine();
@@ -538,13 +537,6 @@ help - shows commands available.
                     CurrentPlayer.Inventory.Add(rustyKnife);
                     Console.Clear();
                     Console.WriteLine($"A {rustyKnife.Name} has been added to your inventory");
-                    noInventory = false;
-                }
-                else if (selection == "3")
-                {
-                    CurrentPlayer.Inventory.Add(healthPotion);
-                    Console.Clear();
-                    Console.WriteLine($"A {healthPotion.Name} has been added to your inventory");
                     noInventory = false;
                 }
                 else
@@ -656,7 +648,6 @@ help - shows commands available.
                     Console.ForegroundColor = ConsoleColor.Black;
                     if (guess < 3)
                     {
-                        Console.Clear();
                         Console.WriteLine($@"
                         What word contains all of the twenty six letters?
                         ");
@@ -670,14 +661,20 @@ help - shows commands available.
                         }
                         if (input == "alphabet" || input == "the alphabet")
                         {
+                            Console.Clear();
                             Console.WriteLine("You have passed the first test of three, you have 2 riddles remaining to retrieve your prize.");
+                            Console.WriteLine("Press Enter to Continue");
+                            Console.ReadLine();
                             riddle1 = true;
                             guess = 0;
                         }
                         else if (input != "alphabet" || input != "the alphabet")
                         {
                             guess++;
+                            Console.Clear();
                             Console.WriteLine($"{input} is not the correct answer.");
+                            Console.WriteLine("Press Enter to Continue");
+                            Console.ReadLine();
                             if (guess == 3)
                             {
                                 continue;
@@ -685,12 +682,16 @@ help - shows commands available.
                             else
                             {
                                 Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
+                                Console.WriteLine("Press Enter to Continue");
+                                Console.ReadLine();
                             }
                         }
                     }
                     else
                     {
                         Console.WriteLine("The room has completely filled up with the toxic gas. You no longer can breathe. You have been poisoned and die.");
+                        Console.WriteLine("Press Enter to Continue");
+                        Console.ReadLine();
                         GameOver();
                     }
                 }
@@ -716,6 +717,8 @@ help - shows commands available.
                         if (input == "mirror" || input == "a mirror")
                         {
                             Console.WriteLine("You have passed the second test of three, you have 1 riddle remaining to retrieve your prize.");
+                            Console.WriteLine("Press Enter to Continue");
+                            Console.ReadLine();
                             riddle2 = true;
                             guess = 0;
                         }
@@ -729,6 +732,8 @@ help - shows commands available.
                             }
                             else
                             {
+                                Console.WriteLine("Press Enter to Continue");
+                                Console.ReadLine();
                                 Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
                             }
                         }
@@ -780,6 +785,8 @@ help - shows commands available.
                             }
                             else
                             {
+                                Console.WriteLine("Press Enter to Continue");
+                                Console.ReadLine();
                                 Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
                             }
                         }
@@ -907,6 +914,8 @@ help - shows commands available.
         public void Intoxicated()
         {
             Console.Clear();
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
+            Console.Clear();
             Console.WriteLine(CurrentRoom.Description);
             Console.WriteLine("With the bottle of wine empty,\nyou have become drunk and can barely walk.");
             bool intoxicated = true;
@@ -919,6 +928,7 @@ help - shows commands available.
                     if (movement == "use food")
                     {
                         Console.Clear();
+                        Console.BackgroundColor = ConsoleColor.White;
                         Console.WriteLine("The food helped with making you sober.");
                         intoxicated = false;
                         continue;
@@ -956,6 +966,7 @@ help - shows commands available.
                 }
                 if (count == 3)
                 {
+                    Console.BackgroundColor = ConsoleColor.DarkMagenta;
                     Console.Clear();
                     intoxicated = false;
                     Health();
@@ -1049,6 +1060,8 @@ help - shows commands available.
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.Clear();
                         Console.WriteLine("You have proven your wisdom. You may continue on your quest.");
+                        Console.WriteLine("Press Enter to Continue");
+                        Console.ReadLine();
                         inRiddle = false;
                         CurrentRoom.Exits["w"].Visited = true;
                         Room nextRoom = CurrentRoom.Exits["w"];
@@ -1072,6 +1085,8 @@ help - shows commands available.
                         else
                         {
                             Console.WriteLine("The walls start to slowly collapse around you. You begin to feel trapped. You fear that you will not get out of this.");
+                            Console.WriteLine("Press Enter to Continue");
+                            Console.ReadLine();
                         }
                     }
                 }
@@ -1079,6 +1094,8 @@ help - shows commands available.
                 {
                     Console.Clear();
                     Console.WriteLine("You have used up all of your guesses. The walls continue to collapse on you. You can no longer move. You figure out the answer to the riddle, but it is too late. You have died.");
+                    Console.WriteLine("Press Enter to Continue");
+                    Console.ReadLine();
                     GameOver();
                     inRiddle = false;
                     return;
@@ -1104,6 +1121,8 @@ help - shows commands available.
         public void Crown()
         {
             Console.WriteLine("You place the crown upon your head. You feel as though you are being lifted out of your body to ascend. The skyline turns deep red and the ground becomes flames. Only you can control the flames. You are now the ruler of the known world!");
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
             GameOver();
         }
 
