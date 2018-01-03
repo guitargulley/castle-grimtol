@@ -33,6 +33,7 @@
 #### Enter battle with skeleton warrior
 1: use battleaxe or great sword for higher hit rates.
 2: if your health is below 60 use healthpotion
+3: you can use any of the food items for an increase in health as well
 ### exit battle
 27: take steelkey
 28: go e
