@@ -50,8 +50,8 @@ namespace CastleGrimtol.Project
                 Console.WriteLine("These items are in the room...");
                 for (int i = 0; i < currentRoom.Items.Count; i++)
                 {
-                    string item = currentRoom.Items[i].Name;
-                    Console.WriteLine(item);
+                    Item item = currentRoom.Items[i];
+                    Console.WriteLine($"{item.Name} - {item.Description}");
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace CastleGrimtol.Project
             for (int i = 0; i < CurrentPlayer.Inventory.Count; i++)
             {
                 Item item = CurrentPlayer.Inventory[i];
-                Console.WriteLine($"{item.Name}");
+                Console.WriteLine($"{item.Name} - {item.Description}");
             }
             Console.WriteLine($"=====================");
         }
@@ -118,7 +118,7 @@ namespace CastleGrimtol.Project
                     }
                     else if (CurrentRoom.Name == "Room 2 North")
                     {
-                        if(CurrentRoom.Items.Count == 0)
+                        if (CurrentRoom.Items.Count == 0)
                         {
                             CurrentRoom.Description = "Large table sits in the middle of the room\nStaircase going to dungeon to the west, and room continues to the South.";
                         }
@@ -130,7 +130,7 @@ namespace CastleGrimtol.Project
                     else if (CurrentRoom.Name == "Dungeon Cell" && !CurrentRoom.Visited)
                     {
                         SkeletonFight();
-                        CurrentRoom.Description = "The bars that surround this cell fell cold, they are as black as coal. An exit is to your East";
+                        CurrentRoom.Description = "The bars that surround this cell feel cold, they are as black as coal. \nTher is an exit is to your East";
                     }
                     else if (CurrentRoom.Name == "Upstairs Reading Room" && !CurrentRoom.Visited)
                     {
@@ -145,12 +145,17 @@ namespace CastleGrimtol.Project
                     {
                         if (CurrentRoom.Enemy == null)
                         {
-                            CurrentRoom.Description = "The room around you is as black as night, but you can see some light shining from under the door to your West.";
+                            CurrentRoom.Description = "The room around you is as black as night, \nbut you can see some light shining from under the door to your West.";
                         }
                         else
                         {
                             CurrentRoom.Description = "You Enter the room and are instantly greeted by a Large Troll!";
                             SkeletonFight();
+                            if (CurrentRoom.Enemy == null)
+                            {
+                                CurrentRoom.Description = "The room around you is as black as night, but you can see some light shining from under the door to your West.";
+
+                            }
                         }
                     }
                     else if (CurrentRoom.Name == "Room 4s")
@@ -223,7 +228,8 @@ namespace CastleGrimtol.Project
         public void Health()
         {
             Console.Clear();
-            Console.WriteLine($"{CurrentPlayer.Name} - {CurrentPlayer.Health}");
+            Console.WriteLine($"{CurrentPlayer.Name} - Health: {CurrentPlayer.Health}");
+
         }
         public void Help()
         {
@@ -252,21 +258,24 @@ help - shows commands available.
             String player = Console.ReadLine();
             SetCurrentPlayer(player);
 
-            Item rustyDagger = new Item("rustyDagger", "Battle Worn Dagger that has been rusted and dulled");
-            Item rustyKnife = new Item("rustyKnife", "Small Single Edged Knife that has been rusted and dulled");
-            Item greatSword = new Item("greatSword", "Two Handed Steel Sword, with gold and silver details along the handle. Provides heavy damage, but slower to attack with.");
-            Item battleAxe = new Item("battleAxe", "Double sided axe. heavy damage, sligthly slower attack than traditional light axe.");
-            Item healthPotion = new Item("healthPotion", "Health potion that recovers health that has been lost during battle");
-            Item brassKey = new Item("brassKey", "Used for unlocking a single brass lock");
-            Item decorativeKey = new Item("decorativeKey", "This key is absolutely useless.");
-            Item steelKey = new Item("steelKey", "unlocks room 17");
-            Item silverKey = new Item("silverKey", "unlocks many of the cells in the dungeon.");
-            Item goldKey = new Item("goldKey", "Unlocks the final room of the game");
-            Item book = new Item("book", "Used to unlock the secret room behind the book case in room 4");
-            Item wine = new Item("wine", "Disorients player, making player go in a random direction for 3 moves");
-            Item food = new Item("food", "Food can be used to distract animals, as well as provide small health regeneration");
-            Item rock = new Item("rock", "Large rock can be used in place of other objects that control pressure plates");
-            Item crown = new Item("crownOfFire", "Once the player equips this, the game is over.");
+            Item rustyDagger = new Item("rustyDagger", "Battle Worn Dagger that has been rusted and dulled.\n        Max damage = 20");
+            Item rustyKnife = new Item("rustyKnife", "Small Single Edged Knife that has been rusted and dulled.\n       Max damage = 20");
+            Item greatSword = new Item("greatSword", "Two Handed Steel Sword.Provides heavy damage. \n        Max damage = 50");
+            Item battleAxe = new Item("battleAxe", "Double sided axe. heavy damage. \n        Max damage = 50");
+            Item healthPotion = new Item("healthPotion", "Health potion that recovers health.\n       40 health gained. Usable under 60 health");
+            Item brassKey = new Item("brassKey", "Unlocks brass locks");
+            Item decorativeKey = new Item("decorativeKey", "Decorative key for keepsake");
+            Item steelKey = new Item("steelKey", "Unlocks steel locks");
+            Item silverKey = new Item("silverKey", "Unlocks silver locks");
+            Item goldKey = new Item("goldKey", "Unlocks gold locks");
+            Item book = new Item("book", "Antique book");
+            Item wine = new Item("wine", "Drinkable");
+            Item food = new Item("food", "Used for restoring health. Max restoration = 15");
+            Item food1 = new Item("meat", "Used for restoring health. Max restoration = 20");
+            Item food2 = new Item("bread", "Used for restoring health. Max restoration = 10");
+            Item food3 = new Item("cabbage", "Used for restoring health. Max restoration = 10");
+            Item rock = new Item("rock", "Large rock");
+            Item crown = new Item("crownOfFire", "Rules the known world");
             List<Item> GameItems = new List<Item>();
 
             GameItems.Add(rustyDagger);
@@ -281,6 +290,9 @@ help - shows commands available.
             GameItems.Add(book);
             GameItems.Add(wine);
             GameItems.Add(food);
+            GameItems.Add(food1);
+            GameItems.Add(food2);
+            GameItems.Add(food3);
             GameItems.Add(crown);
 
             Room Room0 = new Room("Room 0", "First floor Main Hallway\n There are doors to your East and West.\n Hallway continues to the North");
@@ -289,21 +301,21 @@ help - shows commands available.
             Room Painting = new Room("Painting", "The Painting grows larger as you move toward it. \nYou see some writing, it appears to be a riddle. \n\" To Exit you Must Solve this Riddle...\"");
             Room Room2 = new Room("Room 2", "Large table with items to the North. \nStaircase leading to second Floor to the West.\nMain hallway to the East");
             Room Room2N = new Room("Room 2 North", "Large table with items.\nStaircase to the west, and room continues to the South.");
-            Room Room3 = new Room("Room 3", "Room has large desk with a book sitting on it to the South");
-            Room Room3S = new Room("Room 3 South", "In the middle of the large desk in front of you sits a large heavy book. \nThe book looks important.");
+            Room Room3 = new Room("Room 3", "Room has large desk with a book sitting on it to the South\nMain hallway to the East");
+            Room Room3S = new Room("Room 3 South", "In the middle of the large desk in front of you sits a large heavy book.\nThe book looks important.");
             Room Room4 = new Room("Room 4", "Room has Door to South with a brass padlock on it, and Bookshelf to East");
             Room Room4s = new Room("Room 4s", "Secret room off of room 4, requires book to open bookshelf");
             Room Room5 = new Room("Room 5", "Room has a large luxurious rug on the ground spanning the width of the room. \nTo the East is a large desk. \nYou can see a large stack of gold coins sitting on it.");
             Room Room5E = new Room("Room 5E", "TRAP DOOR!");
             Room StairCase = new Room("Stairs", "Stairs from First floor to Second floor");
-            Room StairCase2 = new Room("Stairs", "Stairs from Fisrt floor to Dungeon");
-            Room Room6 = new Room("Upstairs Hallway", "You are in a long narrow hallway. There is no source of light. \nYou stumble through this hallway until you can see light. \nThe hallway continues to your North");
+            Room StairCase2 = new Room("Stairs", "Stairs from First floor to Dungeon");
+            Room Room6 = new Room("Upstairs Hallway", "You are in a long narrow hallway. There is no source of light. \nYou stumble through this hallway until you can see light. \nThe hallway continues to your North\nStaircase to the West.");
             Room Room7 = new Room("Upstairs Hallway South", "There are hundreds of lit candles covering the walls of this hallway. \nThere is a room to the West. \nThe hallway continues to the North and South");
             Room Room7N = new Room("Upstairs Hallway North", "There are hundreds of lit candles covering the walls of this hallway. \nthere is a room to the West with a gold padlock on it. \nThe hallway continues to the South");
             Room Room8 = new Room("Upstairs Reading Room", "You enter the room and are instantly attacked by a Skeleton Ranger! You must fight!");
             Room Room9 = new Room("Upstairs Master Suite", "There is a large Throne sitting in the middle of the room. \nThere is a balcony to the West and the hallway to the East.");
             Room Balcony = new Room("Balcony", "You see the great Crown of Fire sitting on a large table.");
-            Room Ladder = new Room("Ladder", "The ladder takes you through a secret passage into the dungeon");
+            Room Ladder = new Room("Ladder", "A ladder that takes you through a secret passage into the dungeon");
             Room Room10 = new Room("Dungeon Room 10", "Secret entrance to dungeon. \nThe door to the west is locked by a silver padlock.");
             Room Room10W = new Room("Duneon Room 10 west", "Narrow hallway, exits to the west and east.");
             Room Room11 = new Room("Dungeon Hallway North", "A long hallway dimly lit by candles. \nThere are rooms to your East and your West. \nThe hallway continues to the south");
@@ -383,6 +395,9 @@ help - shows commands available.
             {
                 room.UsableItems.Add(healthPotion);
                 room.UsableItems.Add(food);
+                room.UsableItems.Add(food1);
+                room.UsableItems.Add(food2);
+                room.UsableItems.Add(food3);
                 room.UsableItems.Add(wine);
                 room.UsableItems.Add(crown);
             }
@@ -465,6 +480,8 @@ help - shows commands available.
 
             Room8.Exits.Add("e", Room7);
 
+            Room8.Items.Add(food3);
+
             Room9.Exits.Add("w", Balcony);
             Room9.Exits.Add("e", Room7N);
 
@@ -490,9 +507,12 @@ help - shows commands available.
 
             Room14.Exits.Add("w", Room12);
 
+            Room14.Items.Add(food1);
+
             Room15.Exits.Add("e", Room12);
 
             Room15.Items.Add(steelKey);
+            Room15.Items.Add(food2);
 
             Room16.Exits.Add("w", Room13);
             Room16.Exits.Add("e", DisplayCase);
@@ -534,8 +554,10 @@ help - shows commands available.
             Caution will be your ally in this quest.
             To start you off, I shall supply you with one item. 
             You may choose:
-            1: rusty dagger,
-            2: rusty knife,
+         
+            1: {rustyDagger.Name} - Max Damage = 20,
+            2: {rustyKnife.Name} - Max Damage = 20,
+   
             What Say You?(Enter the number associated with selection)
             ");
                 var selection = Console.ReadLine();
@@ -573,6 +595,10 @@ help - shows commands available.
             else if (userInput == "inventory")
             {
                 CheckInventory();
+            }
+            else if (userInput == "health")
+            {
+                Health();
             }
             //figure out what to do with input
             // LOOK, GO, USE, HELP, ETC..
@@ -641,12 +667,16 @@ help - shows commands available.
         {
             Console.WriteLine($@"
             To collect this key for your quest,
-            You must prove to be the best.
+            You must prove yourself to be the best.
             On each side there is a clue,
             Correct answers will let you through.
+            Beware, your guesses only 3
+            Or painful death will come to thee.
 
             You have 3 guesses for each riddle.
             ");
+            Console.WriteLine("press enter to continue");
+            Console.ReadLine();
             int guess = 0;
             string input = "";
             bool inRiddles = true;
@@ -676,7 +706,7 @@ help - shows commands available.
                         if (input == "alphabet" || input == "the alphabet")
                         {
                             Console.Clear();
-                            Console.WriteLine("You have passed the first test of three, you have 2 riddles remaining to retrieve your prize.");
+                            Console.WriteLine("You have passed the first test of three, \nyou have 2 riddles remaining to retrieve your prize.");
                             Console.WriteLine("Press Enter to Continue");
                             Console.ReadLine();
                             riddle1 = true;
@@ -696,7 +726,7 @@ help - shows commands available.
                             else
                             {
                                 Console.Clear();
-                                Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
+                                Console.WriteLine("The room slowly fills up with a toxic gass, \nit becomes harder and harder to breathe");
                                 Console.WriteLine("Press Enter to Continue");
                                 Console.ReadLine();
                             }
@@ -705,7 +735,7 @@ help - shows commands available.
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("The room has completely filled up with the toxic gas. You no longer can breathe. You have been poisoned and die.");
+                        Console.WriteLine("The room has completely filled up with the toxic gas. \nYou no longer can breathe. \nYou have been poisoned and die.");
                         Console.WriteLine("Press Enter to Continue");
                         Console.ReadLine();
                         GameOver();
@@ -732,7 +762,7 @@ help - shows commands available.
                         }
                         if (input == "mirror" || input == "a mirror")
                         {
-                            Console.WriteLine("You have passed the second test of three, you have 1 riddle remaining to retrieve your prize.");
+                            Console.WriteLine("You have passed the second test of three, \nyou have 1 riddle remaining to retrieve your prize.");
                             Console.WriteLine("Press Enter to Continue");
                             Console.ReadLine();
                             riddle2 = true;
@@ -749,7 +779,7 @@ help - shows commands available.
                             else
                             {
                                 Console.Clear();
-                                Console.WriteLine("The room slowly fills up with a toxic gass, it becomes harder and harder to breathe");
+                                Console.WriteLine("The room slowly fills up with a toxic gass, \nit becomes harder and harder to breathe");
                                 Console.WriteLine("Press Enter to Continue");
                                 Console.ReadLine();
                             }
@@ -758,7 +788,7 @@ help - shows commands available.
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("The room has completely filled up with the toxic gas. You no longer can breathe. You have been poisoned and die.");
+                        Console.WriteLine("The room has completely filled up with the toxic gas. \nYou no longer can breathe. \nYou have been poisoned and die.");
                         GameOver();
                     }
                 }
@@ -825,7 +855,6 @@ help - shows commands available.
         public void SkeletonFight()
         {
             Random random = new Random();
-            int randHit = random.Next(4, 16);
             Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.White;
@@ -838,6 +867,7 @@ help - shows commands available.
             CurrentRoom.Visited = true;
             while (inBattle)
             {
+                int randHit = random.Next(4, 16);
                 Console.WriteLine($@"
     {CurrentRoom.Enemy.Name} - {CurrentRoom.Enemy.Health} : {CurrentPlayer.Name} - {CurrentPlayer.Health}
                 ");
@@ -858,6 +888,8 @@ help - shows commands available.
                         Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took {randHit} of damage!");
                         Console.WriteLine("press enter to continue");
                         Console.ReadLine();
+                        Console.Clear();
+                        CheckInventory();
                     }
                 }
                 else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
@@ -869,8 +901,7 @@ help - shows commands available.
                     Console.WriteLine($"With the final blow you have defeated the {CurrentRoom.Enemy.Name}");
                     inBattle = false;
                     CurrentRoom.Enemy = null;
-                    Look();
-                    continue;
+                    break;
                 }
                 else if (CurrentPlayer.Health <= 0 && CurrentRoom.Enemy.Health > 0)
                 {
@@ -887,7 +918,6 @@ help - shows commands available.
         public void BossFight()
         {
             Random random = new Random();
-            int randHit = random.Next(10, 21);
             Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.White;
@@ -900,6 +930,7 @@ help - shows commands available.
             CurrentRoom.Visited = true;
             while (inBattle)
             {
+                int randHit = random.Next(10, 21);
                 Console.WriteLine($@"
     {CurrentRoom.Enemy.Name} - {CurrentRoom.Enemy.Health} : {CurrentPlayer.Name} - {CurrentPlayer.Health}
                 ");
@@ -921,6 +952,8 @@ help - shows commands available.
                         Console.WriteLine($"The {CurrentRoom.Enemy.Name} swung its sword at you and connected with a mighty thud. You took {randHit} of damage!");
                         Console.WriteLine("press enter to continue");
                         Console.ReadLine();
+                        Console.Clear();
+                        CheckInventory();
                     }
                 }
                 else if (CurrentPlayer.Health > 0 && CurrentRoom.Enemy.Health <= 0)
@@ -1019,7 +1052,7 @@ help - shows commands available.
 
         public void BookRoom()
         {
-            CurrentRoom.Description = $"In the middle of the large desk in front of you sits a large heavy {CurrentRoom.Items[0].Name}. The book looks important.";
+            CurrentRoom.Description = $"In the middle of the large desk in front of you sits a large heavy {CurrentRoom.Items[0].Name}. \nThe book looks important.";
             Console.WriteLine(CurrentRoom.Description);
             GetRoomItems(CurrentRoom);
             string next = GetUserInput();
@@ -1031,7 +1064,7 @@ help - shows commands available.
 
             CurrentRoom.Exits["n"].IsLocked = true;
 
-            CurrentRoom.Description = $"As you lift the {item.Name} up, a large steel gate drops behind you!. You are trapped in this small room!. On the desk you notice that there is a small pressure plate where the book was sitting. The door is controlled by this plate.";
+            CurrentRoom.Description = $"As you lift the {item.Name} up, a large steel gate drops behind you!. \nYou are trapped in this small room!. \nYou notice that there is a small pressure plate where the book was sitting. \nThe door is controlled by this plate.";
             while (CurrentRoom.Exits["n"].IsLocked)
             {
                 Console.BackgroundColor = ConsoleColor.DarkRed;
@@ -1087,6 +1120,7 @@ help - shows commands available.
                                 What is it?
                                 ");
                     Console.WriteLine($"You have {3 - guess} guesses remaining.");
+                    Console.Write("What is the answer? :");
                     string response = Console.ReadLine().ToLower();
                     if (response == "q")
                     {
@@ -1099,7 +1133,7 @@ help - shows commands available.
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.Clear();
-                        Console.WriteLine("You have proven your wisdom. You may continue on your quest.");
+                        Console.WriteLine($"Your answer of {response} is correct.\nYou have proven your wisdom. You may continue on your quest.");
                         Console.WriteLine("Press Enter to Continue");
                         Console.ReadLine();
                         inRiddle = false;
@@ -1117,14 +1151,14 @@ help - shows commands available.
                     {
                         guess++;
                         Console.Clear();
-                        Console.WriteLine("Your answer was incorrect.");
+                        Console.WriteLine($"Your answer of {response} was incorrect.");
                         if (guess == 3)
                         {
                             continue;
                         }
                         else
                         {
-                            Console.WriteLine("The walls start to slowly collapse around you. You begin to feel trapped. You fear that you will not get out of this.");
+                            Console.WriteLine("The walls start to slowly collapse around you. \nYou begin to feel trapped. \nYou fear that you will not get out of this.");
                             Console.WriteLine("Press Enter to Continue");
                             Console.ReadLine();
                         }
@@ -1133,7 +1167,7 @@ help - shows commands available.
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("You have used up all of your guesses. The walls continue to collapse on you. You can no longer move. You figure out the answer to the riddle, but it is too late. You have died.");
+                    Console.WriteLine("You have used up all of your guesses. \nThe walls continue to collapse on you. You can no longer move. \nYou figure out the answer to the riddle, but it is too late. \nYou have died.");
                     Console.WriteLine("Press Enter to Continue");
                     Console.ReadLine();
                     GameOver();
@@ -1153,14 +1187,26 @@ help - shows commands available.
         public void PitFall()
         {
             CurrentPlayer.Health -= 20;
-            Console.WriteLine(CurrentRoom.Description);
-            SkeletonFight();
-            CurrentRoom.Description = "The room around you is as black as night, but you can see some light shining from under the door to your West.";
+            if (CurrentRoom.Enemy != null)
+            {
+                Console.WriteLine(CurrentRoom.Description);
+                SkeletonFight();
+                CurrentRoom.Description = "The room around you is as black as night, but you can see some light shining from under the door to your West.";
+            }
+            else
+            {
+                CurrentRoom.Description = $"you fall hearing a crunch as you hit the hard cement floor. \nYou have sustained serious injury. You have {CurrentPlayer.Health} health remaining.";
+            }
+
         }
 
         public void Crown()
         {
-            Console.WriteLine("You place the crown upon your head. You feel as though you are being lifted out of your body to ascend. The skyline turns deep red and the ground becomes flames. Only you can control the flames. You are now the ruler of the known world!");
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Clear();
+            Console.WriteLine("You place the crown upon your head. \nYou feel as though you are being lifted out of your body to ascend. \nThe skyline turns deep red and the ground becomes flames. \nOnly you can control the flames. \nYou are now the ruler of the known world!");
             Console.WriteLine("Press enter to continue");
             Console.ReadLine();
             GameOver();
@@ -1214,7 +1260,7 @@ help - shows commands available.
                         CurrentRoom.Exits["w"].IsLocked = false;
                         CurrentPlayer.Inventory.Remove(item);
                         Console.Clear();
-                        CurrentRoom.Description = "There are hundreds of lit candles covering the walls of this hallway. The room to your West has been unlocked. You can hear something through the walls, but you cannot make out what it is. The hallway continues to the South";
+                        CurrentRoom.Description = "There are hundreds of lit candles covering the walls of this hallway. \nThe room to your West has been unlocked. \nYou can hear something through the walls, but you cannot make out what it is. \nThe hallway continues to the South";
                     }
                     else if (item.Name == "book")
                     {
@@ -1232,7 +1278,7 @@ help - shows commands available.
                             Console.Clear();
                             if (CurrentRoom.Exits["s"].IsLocked)
                             {
-                                CurrentRoom.Description = "There is a room to the South with a brass padlock on it. \nThe bookshelf cracks open revealing a secret room";
+                                CurrentRoom.Description = "There is a room to the South with a brass padlock on it. \nThe bookshelf cracks open revealing a secret room to the East";
                             }
                             else
                             {
@@ -1248,9 +1294,53 @@ help - shows commands available.
                     }
                     else if (item.Name == "food")
                     {
-                        if (CurrentPlayer.Health < 70)
+                        if (CurrentPlayer.Health < 85)
                         {
                             CurrentPlayer.Health += 15;
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
+                        else
+                        {
+                            CurrentPlayer.Health = 100;
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
+                    }
+                    else if (item.Name == "meat")
+                    {
+                        if (CurrentPlayer.Health < 80)
+                        {
+                            CurrentPlayer.Health += 20;
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
+                        else
+                        {
+                            CurrentPlayer.Health = 100;
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
+                    }
+                    else if (item.Name == "bread")
+                    {
+                        if (CurrentPlayer.Health < 90)
+                        {
+                            CurrentPlayer.Health += 10;
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
+                        else
+                        {
+                            CurrentPlayer.Health = 100;
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
+                    }
+                    else if (item.Name == "cabbage")
+                    {
+                        if (CurrentPlayer.Health < 90)
+                        {
+                            CurrentPlayer.Health += 10;
+                            CurrentPlayer.Inventory.Remove(item);
+                        }
+                        else
+                        {
+                            CurrentPlayer.Health = 100;
                             CurrentPlayer.Inventory.Remove(item);
                         }
                     }
@@ -1266,7 +1356,7 @@ help - shows commands available.
                     }
                     else if (item.Name == "healthPotion")
                     {
-                        if (CurrentPlayer.Health < 60)
+                        if (CurrentPlayer.Health <= 60)
                         {
                             if (CurrentRoom.Name != "Upstairs Master Suite")
                             {
