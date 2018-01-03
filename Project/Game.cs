@@ -257,6 +257,11 @@ help - shows commands available.
             Console.Write("I go by: ");
             String player = Console.ReadLine();
             SetCurrentPlayer(player);
+            Console.WriteLine("These are the commands that can be used.");
+            Help();
+            Console.WriteLine("press enter to continue");
+            Console.ReadLine();
+            Console.Clear();
 
             Item rustyDagger = new Item("rustyDagger", "Battle Worn Dagger that has been rusted and dulled.\n        Max damage = 20");
             Item rustyKnife = new Item("rustyKnife", "Small Single Edged Knife that has been rusted and dulled.\n       Max damage = 20");

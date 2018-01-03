@@ -1,7 +1,15 @@
 #Game solution for quick run through
 
+### if you want to test the lose and play again:
+1: enter your name
+2: select either 1 or 2 to get item added to inventory
+3: go e
+4: go e
+5: answer the riddle wrong 3 times(correct answer is time)
+
 ##this will guide you through the most effecient way to win the game but will leave out some of the fun traps.
 1: Start off by entering your player name.
+--displays help menu-- press enter to continue.
 2: Select either 1 or 2 to get item added to inventory
 ### This is where the game actualy starts
 1: go w
@@ -31,9 +39,9 @@
 25: go s
 26: go w
 #### Enter battle with skeleton warrior
-1: use battleaxe or great sword for higher hit rates.
-2: if your health is below 60 use healthpotion
-3: you can use any of the food items for an increase in health as well
+1: use battleaxe or great sword for higher hit rates. -- hit enter to continue through dialog
+2: if your health is below 60 use healthpotion -- check health after battles or after item is used by typing health
+3: you can use any of the food items for an increase in health as well -- check health after battles or after item is used by typing health
 ### exit battle
 27: take steelkey
 28: go e
@@ -60,19 +68,19 @@ answer 3 = "echo"
 # if health is < 75 && > 60
 44: go w
 #### Enter battle with skeleton ranger
-1: use greatsword or battle axe for higer hit rates.
-2: if your health is below 60 use healthpotion
+1: use greatsword or battle axe for higer hit rates. -- hit enter to continue through dialog
+2: if your health is below 60 use healthpotion -- check health after battles or after item is used by typing health
 3: go e
 # if health is > 75
 44: go n
 45: use goldkey
 46: go w
 ####### Enter battle with Undead King
-1: Use greatsword or battleaxe for higer hit rates.
+1: Use greatsword or battleaxe for higer hit rates. -- hit enter to continue through dialog
 2: DO NOT USE HEALTH POTION IN THIS FIGHT -- it is just water and you will lose a turn.
 3: you can use food if you picked it up.
 # Exit battle
 47: go w
 48: take crownoffire
-49: use crownoffire
+49: use crownoffire -- hit enter to continue through dialog
 ########## Game over
